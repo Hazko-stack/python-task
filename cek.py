@@ -16,6 +16,22 @@ print("Jam:", hour)
 print("Menit:", minute)
 
 # soal 3
+phi = 3.14
+r = float(input("jari-jari: "))
+
+C = 2 * phi * r
+
+print("Keliling lingkaran:", C)
+
+# soal 4
+panjang = float(input("Masukkan panjang: "))
+lebar = float(input("Masukkan lebar: "))
+
+C = (panjang + lebar) * 2
+
+print("Keliling persegi panjang:", C)
+
+# soal 5
 A1 = int(input("Angka pertama: "))
 A2 = int(input("Angka kedua: "))
 A3 = int(input("Angka ketiga: "))
@@ -39,19 +55,3 @@ average = (A1 + A2 + A3) / 3
 print("Nilai maksimum:", max_val)
 print("Nilai minimum:", min_val)
 print("Rata-rata:", average)
-
-# soal 4
-phi = 3.14
-r = float(input("jari-jari: "))
-
-C = 2 * phi * r
-
-print("Keliling lingkaran:", C)
-
-# soal 5
-panjang = float(input("Masukkan panjang: "))
-lebar = float(input("Masukkan lebar: "))
-
-C = (panjang + lebar) * 2
-
-print("Keliling persegi panjang:", C)
