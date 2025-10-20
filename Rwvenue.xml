@@ -430,7 +430,7 @@
       <bpmndi:BPMNShape id="Event_Pelanggan_TerimaInvoice_di" bpmnElement="Event_Pelanggan_TerimaInvoice">
         <dc:Bounds x="762" y="1032" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="742" y="1075" width="77" height="14" /></bpmndi:BPMNLabel>
-      </tamd:BPMNShape>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_Pelanggan_Bayar_di" bpmnElement="Task_Pelanggan_Bayar">
         <dc:Bounds x="850" y="1010" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -485,7 +485,7 @@
       <bpmndi:BPMNEdge id="sf_k1_di" bpmnElement="sf_k1"><di:waypoint x="405" y="770" /><di:waypoint x="480" y="770" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sf_k2_di" bpmnElement="sf_k2"><di:waypoint x="580" y="770" /><di:waypoint x="630" y="770" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="assoc_invoice_datastore_di" bpmnElement="assoc_invoice_datastore"><di:waypoint x="680" y="810" /><di:waypoint x="680" y="825" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="sf_k3_di" bpmnElement="sf_k3"><di:waypoint x="730" y="770" /><di:waypoint x="780" y="770" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k3_di" bpmnElement="sf_k3"><di:waypoint x="730" y="770" /><di:waypoint x="780" y="770" /></bpmMNDI:BPMNEdge>
       <bpmndi:BPMNEdge id="sf_k4_di" bpmnElement="sf_k4"><di:waypoint x="880" y="770" /><di:waypoint x="935" y="770" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sf_k5_di" bpmnElement="sf_k5"><di:waypoint x="985" y="770" /><di:waypoint x="1040" y="770" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sf_k6_di" bpmnElement="sf_k6"><di:waypoint x="960" y="795" /><di:waypoint x="960" y="860" /><di:waypoint x="1040" y="860" /></bpmndi:BPMNEdge>
