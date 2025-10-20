@@ -3,7 +3,7 @@
                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  id="Definitions_BeeCycle_Processes"
+                  id="Definitions_Revenue_Cycle"
                   targetNamespace="http://bpmn.io/schema/bpmn">
 
   <bpmn:collaboration id="Collaboration_Revenue">
@@ -12,8 +12,9 @@
 
     <bpmn:messageFlow id="Flow_PO_to_Sales" name="Kirim PO" sourceRef="Task_Pelanggan_KirimPO" targetRef="StartEvent_PO_Diterima" />
     <bpmn:messageFlow id="Flow_Barang_to_Pelanggan" name="Kirim Barang &amp; Notice" sourceRef="Task_Pengiriman_Kirim" targetRef="Event_Pelanggan_TerimaBarang" />
+    <bpmn:messageFlow id="Flow_Notice_to_Pelanggan" name="Beri Rangkap 2 Notice" sourceRef="Task_Pengiriman_BeriNotice" targetRef="Event_Pelanggan_TerimaBarang" />
     <bpmn:messageFlow id="Flow_Invoice_to_Pelanggan" name="Kirim Invoice" sourceRef="Task_Keuangan_KirimInvoice" targetRef="Event_Pelanggan_TerimaInvoice" />
-    <bpmn:messageFlow id="Flow_Remittance_to_Keuangan" name="Kirim Bukti Bayar" sourceRef="Task_Pelanggan_KirimRemittance" targetRef="Event_Keuangan_TerimaRemittance" />
+    <bpmn:messageFlow id="Flow_Remittance_to_Keuangan" name="Kirim Remittance Advice" sourceRef="Task_Pelanggan_KirimRemittance" targetRef="Event_Keuangan_TerimaRemittance" />
     <bpmn:messageFlow id="Flow_Kuitansi_to_Pelanggan" name="Kirim Kuitansi" sourceRef="Task_Keuangan_KirimKuitansi" targetRef="Event_Pelanggan_TerimaKuitansi" />
   </bpmn:collaboration>
 
@@ -90,13 +91,13 @@
     <bpmn:task id="Task_Penjualan_KirimGudang" name="Kirim SO ke Gudang" />
     <bpmn:task id="Task_Penjualan_KirimKeuangan" name="Kirim SO ke Keuangan" />
     <bpmn:task id="Task_Penjualan_Arsip" name="Arsipkan SO" />
-    <bpmn:sequenceFlow id="sf1" sourceRef="StartEvent_PO_Diterima" targetRef="Task_Penjualan_BuatSO" />
-    <bpmn:sequenceFlow id="sf2" sourceRef="Task_Penjualan_BuatSO" targetRef="Task_Penjualan_CetakSO" />
+    <bpmn:sequenceFlow id="sf_p1" sourceRef="StartEvent_PO_Diterima" targetRef="Task_Penjualan_BuatSO" />
+    <bpmn:sequenceFlow id="sf_p2" sourceRef="Task_Penjualan_BuatSO" targetRef="Task_Penjualan_CetakSO" />
     <bpmn:association id="assoc_so_datastore" sourceRef="Task_Penjualan_BuatSO" targetRef="DataStore_SO" />
-    <bpmn:sequenceFlow id="sf3" sourceRef="Task_Penjualan_CetakSO" targetRef="Gateway_Penjualan_Split" />
-    <bpmn:sequenceFlow id="sf4" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_KirimGudang" />
-    <bpmn:sequenceFlow id="sf5" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_KirimKeuangan" />
-    <bpmn:sequenceFlow id="sf6" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_Arsip" />
+    <bpmn:sequenceFlow id="sf_p3" sourceRef="Task_Penjualan_CetakSO" targetRef="Gateway_Penjualan_Split" />
+    <bpmn:sequenceFlow id="sf_p4" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_KirimGudang" />
+    <bpmn:sequenceFlow id="sf_p5" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_KirimKeuangan" />
+    <bpmn:sequenceFlow id="sf_p6" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_Arsip" />
 
     <bpmn:task id="Task_Gudang_TerimaSO" name="Terima SO" />
     <bpmn:task id="Task_Gudang_BuatPicking" name="Buat Picking List" />
@@ -138,15 +139,15 @@
     <bpmn:parallelGateway id="Gateway_Pengiriman_Split" name="Distribusi Sisa Notice" />
     <bpmn:task id="Task_Pengiriman_KirimKeuangan" name="Kirim rangkap 1 ke Keuangan" />
     <bpmn:task id="Task_Pengiriman_Arsip" name="Arsipkan rangkap 3" />
-    <bpmn:sequenceFlow id="sf_p1" sourceRef="Task_Gudang_KirimPengiriman" targetRef="Task_Pengiriman_TerimaNotice" />
-    <bpmn:sequenceFlow id="sf_p2" sourceRef="Task_Pengiriman_TerimaNotice" targetRef="Task_Pengiriman_AmbilBarang" />
-    <bpmn:sequenceFlow id="sf_p3" sourceRef="Task_Pengiriman_AmbilBarang" targetRef="Task_Pengiriman_Kirim" />
-    <bpmn:sequenceFlow id="sf_p4" sourceRef="Task_Pengiriman_Kirim" targetRef="Task_Pengiriman_DapatTTD" />
-    <bpmn:sequenceFlow id="sf_p5" sourceRef="Task_Pengiriman_DapatTTD" targetRef="Task_Pengiriman_BeriNotice" />
-    <bpmn:sequenceFlow id="sf_p6" sourceRef="Task_Pengiriman_BeriNotice" targetRef="Task_Pengiriman_Kembali" />
-    <bpmn:sequenceFlow id="sf_p7" sourceRef="Task_Pengiriman_Kembali" targetRef="Gateway_Pengiriman_Split" />
-    <bpmn:sequenceFlow id="sf_p8" sourceRef="Gateway_Pengiriman_Split" targetRef="Task_Pengiriman_KirimKeuangan" />
-    <bpmn:sequenceFlow id="sf_p9" sourceRef="Gateway_Pengiriman_Split" targetRef="Task_Pengiriman_Arsip" />
+    <bpmn:sequenceFlow id="sf_pe1" sourceRef="Task_Gudang_KirimPengiriman" targetRef="Task_Pengiriman_TerimaNotice" />
+    <bpmn:sequenceFlow id="sf_pe2" sourceRef="Task_Pengiriman_TerimaNotice" targetRef="Task_Pengiriman_AmbilBarang" />
+    <bpmn:sequenceFlow id="sf_pe3" sourceRef="Task_Pengiriman_AmbilBarang" targetRef="Task_Pengiriman_Kirim" />
+    <bpmn:sequenceFlow id="sf_pe4" sourceRef="Task_Pengiriman_Kirim" targetRef="Task_Pengiriman_DapatTTD" />
+    <bpmn:sequenceFlow id="sf_pe5" sourceRef="Task_Pengiriman_DapatTTD" targetRef="Task_Pengiriman_BeriNotice" />
+    <bpmn:sequenceFlow id="sf_pe6" sourceRef="Task_Pengiriman_BeriNotice" targetRef="Task_Pengiriman_Kembali" />
+    <bpmn:sequenceFlow id="sf_pe7" sourceRef="Task_Pengiriman_Kembali" targetRef="Gateway_Pengiriman_Split" />
+    <bpmn:sequenceFlow id="sf_pe8" sourceRef="Gateway_Pengiriman_Split" targetRef="Task_Pengiriman_KirimKeuangan" />
+    <bpmn:sequenceFlow id="sf_pe9" sourceRef="Gateway_Pengiriman_Split" targetRef="Task_Pengiriman_Arsip" />
 
     <bpmn:parallelGateway id="Gateway_Keuangan_Join" name="Tunggu Dokumen (SO &amp; Notice)" />
     <bpmn:task id="Task_Keuangan_Cocokkan" name="Cocokkan SO &amp; Shipping Notice TTD" />
@@ -178,26 +179,27 @@
     <bpmn:sequenceFlow id="sf_k4" sourceRef="Task_Keuangan_CetakInvoice" targetRef="Gateway_Keuangan_Split_Invoice" />
     <bpmn:sequenceFlow id="sf_k5" sourceRef="Gateway_Keuangan_Split_Invoice" targetRef="Task_Keuangan_KirimInvoice" />
     <bpmn:sequenceFlow id="sf_k6" sourceRef="Gateway_Keuangan_Split_Invoice" targetRef="Task_Keuangan_ArsipInvoice" />
-    <bpmn:sequenceFlow id="sf_k7" sourceRef="Event_Keuangan_TerimaRemittance" targetRef="Task_Keuangan_CocokkanRemittance" />
-    <bpmn:sequenceFlow id="sf_k8" sourceRef="Task_Keuangan_CocokkanRemittance" targetRef="Gateway_Keuangan_Decision" />
+    <bpmn:sequenceFlow id="sf_k7" sourceRef="Task_Keuangan_ArsipInvoice" targetRef="Event_Keuangan_TerimaRemittance" />
+    <bpmn:sequenceFlow id="sf_k8" sourceRef="Event_Keuangan_TerimaRemittance" targetRef="Task_Keuangan_CocokkanRemittance" />
+    <bpmn:sequenceFlow id="sf_k9" sourceRef="Task_Keuangan_CocokkanRemittance" targetRef="Gateway_Keuangan_Decision" />
     <bpmn:sequenceFlow id="sf_k_yes" name="Sesuai" sourceRef="Gateway_Keuangan_Decision" targetRef="Task_Keuangan_BuatKuitansi" />
     <bpmn:sequenceFlow id="sf_k_no" name="Tidak Sesuai" sourceRef="Gateway_Keuangan_Decision" targetRef="Task_Keuangan_HubungiPelanggan" />
-    <bpmn:sequenceFlow id="sf_k9" sourceRef="Task_Keuangan_BuatKuitansi" targetRef="Task_Keuangan_CetakKuitansi" />
+    <bpmn:sequenceFlow id="sf_k10" sourceRef="Task_Keuangan_BuatKuitansi" targetRef="Task_Keuangan_CetakKuitansi" />
     <bpmn:association id="assoc_kuitansi_datastore" sourceRef="Task_Keuangan_BuatKuitansi" targetRef="DataStore_Kuitansi" />
-    <bpmn:sequenceFlow id="sf_k10" sourceRef="Task_Keuangan_CetakKuitansi" targetRef="Gateway_Keuangan_Split_Kuitansi" />
-    <bpmn:sequenceFlow id="sf_k11" sourceRef="Gateway_Keuangan_Split_Kuitansi" targetRef="Task_Keuangan_KirimKuitansi" />
-    <bpmn:sequenceFlow id="sf_k12" sourceRef="Gateway_Keuangan_Split_Kuitansi" targetRef="Task_Keuangan_ArsipKuitansi" />
-    <bpmn:sequenceFlow id="sf_k13" sourceRef="Task_Keuangan_ArsipKuitansi" targetRef="EndEvent_Lunas" />
+    <bpmn:sequenceFlow id="sf_k11" sourceRef="Task_Keuangan_CetakKuitansi" targetRef="Gateway_Keuangan_Split_Kuitansi" />
+    <bpmn:sequenceFlow id="sf_k12" sourceRef="Gateway_Keuangan_Split_Kuitansi" targetRef="Task_Keuangan_KirimKuitansi" />
+    <bpmn:sequenceFlow id="sf_k13" sourceRef="Gateway_Keuangan_Split_Kuitansi" targetRef="Task_Keuangan_ArsipKuitansi" />
+    <bpmn:sequenceFlow id="sf_k14" sourceRef="Task_Keuangan_ArsipKuitansi" targetRef="EndEvent_Lunas" />
+    <bpmn:sequenceFlow id="sf_k15" sourceRef="Task_Keuangan_HubungiPelanggan" targetRef="Event_Keuangan_TerimaRemittance" />
   </bpmn:process>
 
   <bpmn:process id="Process_Pelanggan" isExecutable="false">
     <bpmn:startEvent id="Start_Pelanggan" name="Mulai Pesan" />
     <bpmn:task id="Task_Pelanggan_BuatPO" name="Buat Purchase Order (PO)" />
     <bpmn:task id="Task_Pelanggan_KirimPO" name="Kirim PO" />
-    <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaBarang" name="Terima Barang &amp; Shipping Notice">
+    <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaBarang" name="Terima Barang, Notice &amp; TTD">
       <bpmn:messageEventDefinition />
     </bpmn:intermediateCatchEvent>
-    <bpmn:task id="Task_Pelanggan_TandaTangan" name="Tanda Tangani Shipping Notice" />
     <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaInvoice" name="Terima Invoice">
       <bpmn:messageEventDefinition />
     </bpmn:intermediateCatchEvent>
@@ -209,143 +211,342 @@
     <bpmn:endEvent id="End_Pelanggan" name="Pesanan Selesai" />
     <bpmn:sequenceFlow id="sf_c1" sourceRef="Start_Pelanggan" targetRef="Task_Pelanggan_BuatPO" />
     <bpmn:sequenceFlow id="sf_c2" sourceRef="Task_Pelanggan_BuatPO" targetRef="Task_Pelanggan_KirimPO" />
-    <bpmn:sequenceFlow id="sf_c3" sourceRef="Event_Pelanggan_TerimaBarang" targetRef="Task_Pelanggan_TandaTangan" />
-    <bpmn:sequenceFlow id="sf_c4" sourceRef="Event_Pelanggan_TerimaInvoice" targetRef="Task_Pelanggan_Bayar" />
-    <bpmn:sequenceFlow id="sf_c5" sourceRef="Task_Pelanggan_Bayar" targetRef="Task_Pelanggan_KirimRemittance" />
-    <bpmn:sequenceFlow id="sf_c6" sourceRef="Event_Pelanggan_TerimaKuitansi" targetRef="End_Pelanggan" />
-  </bpmn:process>
-
-
-  <bpmn:collaboration id="Collaboration_Expenditure">
-    <bpmn:participant id="Participant_BeeCycle_Expenditure" name="BeeCycle (Pembelian)" processRef="Process_Expenditure" />
-    <bpmn:participant id="Participant_Pemasok" name="Pemasok (Supplier)" /> <bpmn:messageFlow id="Flow_SPP_to_Pemasok" name="Kirim SPP" sourceRef="Task_Manajer_KirimSPP" targetRef="Participant_Pemasok" />
-    <bpmn:messageFlow id="Flow_Barang_from_Pemasok" name="Kirim Barang &amp; Surat Jalan" sourceRef="Participant_Pemasok" targetRef="Event_Gudang_TerimaBarang" />
-    <bpmn:messageFlow id="Flow_Tagihan_from_Pemasok" name="Kirim Surat Tagihan" sourceRef="Participant_Pemasok" targetRef="Event_Keuangan_TerimaTagihan" />
-    <bpmn:messageFlow id="Flow_Bayar_to_Pemasok" name="Kirim Pembayaran" sourceRef="Task_Keuangan_Bayar" targetRef="Participant_Pemasok" />
-  </bpmn:collaboration>
-
-  <bpmn:process id="Process_Expenditure" isExecutable="false">
-    <bpmn:laneSet id="LaneSet_Expenditure">
-      <bpmn:lane id="Lane_Manajer" name="Manajer Toko">
-        <bpmn:flowNodeRef>StartEvent_AkhirBulan</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Manajer_Inventaris</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Manajer_BuatSPP</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Manajer_KirimSPP</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Manajer_KirimKeuangan</bpmn:flowNodeRef>
-      </bpmn:lane>
-      <bpmn:lane id="Lane_Gudang_Exp" name="Bagian Gudang">
-        <bpmn:flowNodeRef>Event_Gudang_TerimaBarang</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Gudang_Periksa</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Gudang_InputStok</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Gudang_CetakLPS</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Gudang_KirimLPS</bpmn:flowNodeRef>
-      </bpmn:lane>
-      <bpmn:lane id="Lane_Keuangan_Exp" name="Bagian Keuangan">
-        <bpmn:flowNodeRef>Gateway_Keuangan_Join_Exp</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_Keuangan_TerimaTagihan</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Keuangan_Cocokkan3Way</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_Keuangan_Decision_Exp</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_Keuangan_Tunggu</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Keuangan_Bayar</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndEvent_Lunas_Exp</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Keuangan_Investigasi</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndEvent_Dispute_Exp</bpmn:flowNodeRef>
-      </bpmn:lane>
-    </bpmn:laneSet>
-
-    <bpmn:startEvent id="StartEvent_AkhirBulan" name="Setiap Akhir Bulan">
-      <bpmn:timerEventDefinition />
-    </bpmn:startEvent>
-    <bpmn:task id="Task_Manajer_Inventaris" name="Lakukan Inventarisasi Stok" />
-    <bpmn:task id="Task_Manajer_BuatSPP" name="Buat Surat Pesanan Pembelian (SPP)" />
-    <bpmn:task id="Task_Manajer_KirimSPP" name="Kirim SPP ke Pemasok" />
-    <bpmn:task id="Task_Manajer_KirimKeuangan" name="Kirim Salinan SPP ke Keuangan" />
-    <bpmn:sequenceFlow id="sf_m1" sourceRef="StartEvent_AkhirBulan" targetRef="Task_Manajer_Inventaris" />
-    <bpmn:sequenceFlow id="sf_m2" sourceRef="Task_Manajer_Inventaris" targetRef="Task_Manajer_BuatSPP" />
-    <bpmn:sequenceFlow id="sf_m3" sourceRef="Task_Manajer_BuatSPP" targetRef="Task_Manajer_KirimSPP" />
-    <bpmn:sequenceFlow id="sf_m4" sourceRef="Task_Manajer_BuatSPP" targetRef="Task_Manajer_KirimKeuangan" />
-
-    <bpmn:intermediateCatchEvent id="Event_Gudang_TerimaBarang" name="Barang Diterima">
-      <bpmn:messageEventDefinition />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:task id="Task_Gudang_Periksa" name="Periksa Pengiriman &amp; TTD Surat Jalan" />
-    <bpmn:task id="Task_Gudang_InputStok" name="Input Penerimaan ke Persediaan" />
-    <bpmn:task id="Task_Gudang_CetakLPS" name="Cetak Laporan Penerimaan Sepeda (LPS)" />
-    <bpmn:task id="Task_Gudang_KirimLPS" name="Kirim LPS ke Keuangan" />
-    <bpmn:sequenceFlow id="sf_ge1" sourceRef="Event_Gudang_TerimaBarang" targetRef="Task_Gudang_Periksa" />
-    <bpmn:sequenceFlow id="sf_ge2" sourceRef="Task_Gudang_Periksa" targetRef="Task_Gudang_InputStok" />
-    <bpmn:sequenceFlow id="sf_ge3" sourceRef="Task_Gudang_InputStok" targetRef="Task_Gudang_CetakLPS" />
-    <bpmn:sequenceFlow id="sf_ge4" sourceRef="Task_Gudang_CetakLPS" targetRef="Task_Gudang_KirimLPS" />
-
-    <bpmn:parallelGateway id="Gateway_Keuangan_Join_Exp" name="Tunggu Dokumen (3-Way Match)" />
-    <bpmn:intermediateCatchEvent id="Event_Keuangan_TerimaTagihan" name="Surat Tagihan Diterima">
-      <bpmn:messageEventDefinition />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:task id="Task_Keuangan_Cocokkan3Way" name="Lakukan Pencocokan (SPP, LPS, Tagihan)" />
-    <bpmn:exclusiveGateway id="Gateway_Keuangan_Decision_Exp" name="Dokumen Cocok?" />
-    <bpmn:intermediateCatchEvent id="Event_Keuangan_Tunggu" name="Tunggu 1 Minggu">
-      <bpmn:timerEventDefinition />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:task id="Task_Keuangan_Bayar" name="Lakukan Pembayaran ke Pemasok" />
-    <bpmn:endEvent id="EndEvent_Lunas_Exp" name="Lunas" />
-    <bpmn:task id="Task_Keuangan_Investigasi" name="Hubungi Pemasok / Gudang (Investigasi)" />
-    <bpmn:endEvent id="EndEvent_Dispute_Exp" name="Dispute" />
-    <bpmn:sequenceFlow id="sf_ke_join1" sourceRef="Task_Manajer_KirimKeuangan" targetRef="Gateway_Keuangan_Join_Exp" />
-    <bpmn:sequenceFlow id="sf_ke_join2" sourceRef="Task_Gudang_KirimLPS" targetRef="Gateway_Keuangan_Join_Exp" />
-    <bpmn:sequenceFlow id="sf_ke_join3" sourceRef="Event_Keuangan_TerimaTagihan" targetRef="Gateway_Keuangan_Join_Exp" />
-    <bpmn:sequenceFlow id="sf_ke1" sourceRef="Gateway_Keuangan_Join_Exp" targetRef="Task_Keuangan_Cocokkan3Way" />
-    <bpmn:sequenceFlow id="sf_ke2" sourceRef="Task_Keuangan_Cocokkan3Way" targetRef="Gateway_Keuangan_Decision_Exp" />
-    <bpmn:sequenceFlow id="sf_ke_yes" name="Yes" sourceRef="Gateway_Keuangan_Decision_Exp" targetRef="Event_Keuangan_Tunggu" />
-    <bpmn:sequenceFlow id="sf_ke_no" name="No" sourceRef="Gateway_Keuangan_Decision_Exp" targetRef="Task_Keuangan_Investigasi" />
-    <bpmn:sequenceFlow id="sf_ke3" sourceRef="Event_Keuangan_Tunggu" targetRef="Task_Keuangan_Bayar" />
-    <bpmn:sequenceFlow id="sf_ke4" sourceRef="Task_Keuangan_Bayar" targetRef="EndEvent_Lunas_Exp" />
-    <bpmn:sequenceFlow id="sf_ke5" sourceRef="Task_Keuangan_Investigasi" targetRef="EndEvent_Dispute_Exp" />
+    <bpmn:sequenceFlow id="sf_c3" sourceRef="Task_Pelanggan_KirimPO" targetRef="Event_Pelanggan_TerimaBarang" />
+    <bpmn:sequenceFlow id="sf_c4" sourceRef="Event_Pelanggan_TerimaBarang" targetRef="Event_Pelanggan_TerimaInvoice" />
+    <bpmn:sequenceFlow id="sf_c5" sourceRef="Event_Pelanggan_TerimaInvoice" targetRef="Task_Pelanggan_Bayar" />
+    <bpmn:sequenceFlow id="sf_c6" sourceRef="Task_Pelanggan_Bayar" targetRef="Task_Pelanggan_KirimRemittance" />
+    <bpmn:sequenceFlow id="sf_c7" sourceRef="Task_Pelanggan_KirimRemittance" targetRef="Event_Pelanggan_TerimaKuitansi" />
+    <bpmn:sequenceFlow id="sf_c8" sourceRef="Event_Pelanggan_TerimaKuitansi" targetRef="End_Pelanggan" />
   </bpmn:process>
 
   <bpmndi:BPMNDiagram id="BPMNDiagram_Revenue">
     <bpmndi:BPMNPlane id="BPMNPlane_Revenue" bpmnElement="Collaboration_Revenue">
       <bpmndi:BPMNShape id="Participant_BeeCycle_Revenue_di" bpmnElement="Participant_BeeCycle_Revenue" isHorizontal="true">
-        <dc:Bounds x="100" y="100" width="1200" height="800" />
+        <dc:Bounds x="160" y="80" width="1690" height="800" />
       </bpmndi:BPMNShape>
+      
       <bpmndi:BPMNShape id="Lane_Penjualan_di" bpmnElement="Lane_Penjualan" isHorizontal="true">
-        <dc:Bounds x="130" y="100" width="1170" height="200" />
+        <dc:Bounds x="190" y="80" width="1660" height="200" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_PO_Diterima_di" bpmnElement="StartEvent_PO_Diterima">
+        <dc:Bounds x="242" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="228" y="205" width="65" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Penjualan_BuatSO_di" bpmnElement="Task_Penjualan_BuatSO">
+        <dc:Bounds x="330" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStore_SO_di" bpmnElement="DataStore_SO">
+        <dc:Bounds x="355" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="345" y="292" width="70" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Penjualan_CetakSO_di" bpmnElement="Task_Penjualan_CetakSO">
+        <dc:Bounds x="480" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Penjualan_Split_di" bpmnElement="Gateway_Penjualan_Split" isMarkerVisible="true">
+        <dc:Bounds x="635" y="155" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="625" y="125" width="70" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Penjualan_KirimGudang_di" bpmnElement="Task_Penjualan_KirimGudang">
+        <dc:Bounds x="740" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Penjualan_KirimKeuangan_di" bpmnElement="Task_Penjualan_KirimKeuangan">
+        <dc:Bounds x="740" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Penjualan_Arsip_di" bpmnElement="Task_Penjualan_Arsip">
+        <dc:Bounds x="890" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
       <bpmndi:BPMNShape id="Lane_Gudang_di" bpmnElement="Lane_Gudang" isHorizontal="true">
-        <dc:Bounds x="130" y="300" width="1170" height="200" />
+        <dc:Bounds x="190" y="280" width="1660" height="200" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_TerimaSO_di" bpmnElement="Task_Gudang_TerimaSO">
+        <dc:Bounds x="740" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_BuatPicking_di" bpmnElement="Task_Gudang_BuatPicking">
+        <dc:Bounds x="890" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStore_PickingList_di" bpmnElement="DataStore_PickingList">
+        <dc:Bounds x="915" y="395" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="910" y="452" width="60" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_CetakPicking_di" bpmnElement="Task_Gudang_CetakPicking">
+        <dc:Bounds x="1040" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_AmbilBarang_di" bpmnElement="Task_Gudang_AmbilBarang">
+        <dc:Bounds x="1190" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_Kemas_di" bpmnElement="Task_Gudang_Kemas">
+        <dc:Bounds x="1340" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_InputPacking_di" bpmnElement="Task_Gudang_InputPacking">
+        <dc:Bounds x="1490" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStore_PackingList_di" bpmnElement="DataStore_PackingList">
+        <dc:Bounds x="1515" y="395" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1508" y="452" width="64" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_CetakSlip_di" bpmnElement="Task_Gudang_CetakSlip">
+        <dc:Bounds x="1640" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_BuatNotice_di" bpmnElement="Task_Gudang_BuatNotice">
+        <dc:Bounds x="1490" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStore_ShippingNotice_di" bpmnElement="DataStore_ShippingNotice">
+        <dc:Bounds x="1515" y="125" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1499" y="98" width="83" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_CetakNotice_di" bpmnElement="Task_Gudang_CetakNotice">
+        <dc:Bounds x="1640" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Gudang_Split_di" bpmnElement="Gateway_Gudang_Split" isMarkerVisible="true">
+        <dc:Bounds x="1795" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1780" y="175" width="81" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_KirimPengiriman_di" bpmnElement="Task_Gudang_KirimPengiriman">
+        <dc:Bounds x="1640" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Gudang_Arsip_di" bpmnElement="Task_Gudang_Arsip">
+        <dc:Bounds x="1770" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
       <bpmndi:BPMNShape id="Lane_Pengiriman_di" bpmnElement="Lane_Pengiriman" isHorizontal="true">
-        <dc:Bounds x="130" y="500" width="1170" height="200" />
+        <dc:Bounds x="190" y="480" width="1660" height="200" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pengiriman_TerimaNotice_di" bpmnElement="Task_Pengiriman_TerimaNotice">
+        <dc:Bounds x="1490" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pengiriman_AmbilBarang_di" bpmnElement="Task_Pengiriman_AmbilBarang">
+        <dc:Bounds x="1340" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pengiriman_Kirim_di" bpmnElement="Task_Pengiriman_Kirim">
+        <dc:Bounds x="1190" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pengiriman_DapatTTD_di" bpmnElement="Task_Pengiriman_DapatTTD">
+        <dc:Bounds x="1040" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pengiriman_BeriNotice_di" bpmnElement="Task_Pengiriman_BeriNotice">
+        <dc:Bounds x="890" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pengiriman_Kembali_di" bpmnElement="Task_Pengiriman_Kembali">
+        <dc:Bounds x="740" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Pengiriman_Split_di" bpmnElement="Gateway_Pengiriman_Split" isMarkerVisible="true">
+        <dc:Bounds x="635" y="515" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="615" y="572" width="90" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pengiriman_KirimKeuangan_di" bpmnElement="Task_Pengiriman_KirimKeuangan">
+        <dc:Bounds x="480" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pengiriman_Arsip_di" bpmnElement="Task_Pengiriman_Arsip">
+        <dc:Bounds x="480" y="600" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
       <bpmndi:BPMNShape id="Lane_Keuangan_di" bpmnElement="Lane_Keuangan" isHorizontal="true">
-        <dc:Bounds x="130" y="700" width="1170" height="200" />
+        <dc:Bounds x="190" y="680" width="1660" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Keuangan_Join_di" bpmnElement="Gateway_Keuangan_Join" isMarkerVisible="true">
+        <dc:Bounds x="355" y="745" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="335" y="802" width="90" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_Cocokkan_di" bpmnElement="Task_Keuangan_Cocokkan">
+        <dc:Bounds x="480" y="730" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_BuatInvoice_di" bpmnElement="Task_Keuangan_BuatInvoice">
+        <dc:Bounds x="630" y="730" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStore_Invoice_di" bpmnElement="DataStore_Invoice">
+        <dc:Bounds x="655" y="825" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="660" y="882" width="40" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_CetakInvoice_di" bpmnElement="Task_Keuangan_CetakInvoice">
+        <dc:Bounds x="780" y="730" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Keuangan_Split_Invoice_di" bpmnElement="Gateway_Keuangan_Split_Invoice" isMarkerVisible="true">
+        <dc:Bounds x="935" y="745" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="918" y="802" width="84" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_KirimInvoice_di" bpmnElement="Task_Keuangan_KirimInvoice">
+        <dc:Bounds x="1040" y="730" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_ArsipInvoice_di" bpmnElement="Task_Keuangan_ArsipInvoice">
+        <dc:Bounds x="1040" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Keuangan_TerimaRemittance_di" bpmnElement="Event_Keuangan_TerimaRemittance">
+        <dc:Bounds x="1192" y="842" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1172" y="885" width="77" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_CocokkanRemittance_di" bpmnElement="Task_Keuangan_CocokkanRemittance">
+        <dc:Bounds x="1280" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Keuangan_Decision_di" bpmnElement="Gateway_Keuangan_Decision" isMarkerVisible="true">
+        <dc:Bounds x="1435" y="835" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1418" y="892" width="84" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_BuatKuitansi_di" bpmnElement="Task_Keuangan_BuatKuitansi">
+        <dc:Bounds x="1540" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStore_Kuitansi_di" bpmnElement="DataStore_Kuitansi">
+        <dc:Bounds x="1565" y="755" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1565" y="731" width="50" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_CetakKuitansi_di" bpmnElement="Task_Keuangan_CetakKuitansi">
+        <dc:Bounds x="1690" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Keuangan_Split_Kuitansi_di" bpmnElement="Gateway_Keuangan_Split_Kuitansi" isMarkerVisible="true">
+        <dc:Bounds x="1815" y="835" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1801" y="805" width="78" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_KirimKuitansi_di" bpmnElement="Task_Keuangan_KirimKuitansi">
+        <dc:Bounds x="1720" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_ArsipKuitansi_di" bpmnElement="Task_Keuangan_ArsipKuitansi">
+        <dc:Bounds x="1690" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Lunas_di" bpmnElement="EndEvent_Lunas">
+        <dc:Bounds x="1782" y="642" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1780" y="685" width="40" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Keuangan_HubungiPelanggan_di" bpmnElement="Task_Keuangan_HubungiPelanggan">
+        <dc:Bounds x="1410" y="700" width="100" height="80" />
       </bpmndi:BPMNShape>
       
       <bpmndi:BPMNShape id="Participant_Pelanggan_di" bpmnElement="Participant_Pelanggan" isHorizontal="true">
-        <dc:Bounds x="100" y="1000" width="1200" height="200" />
+        <dc:Bounds x="160" y="950" width="1690" height="200" />
       </bpmndi:BPMNShape>
-      </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
+      <bpmndi:BPMNShape id="Start_Pelanggan_di" bpmnElement="Start_Pelanggan">
+        <dc:Bounds x="242" y="1032" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="231" y="1075" width="59" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pelanggan_BuatPO_di" bpmnElement="Task_Pelanggan_BuatPO">
+        <dc:Bounds x="330" y="1010" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pelanggan_KirimPO_di" bpmnElement="Task_Pelanggan_KirimPO">
+        <dc:Bounds x="480" y="1010" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Pelanggan_TerimaBarang_di" bpmnElement="Event_Pelanggan_TerimaBarang">
+        <dc:Bounds x="642" y="1032" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="618" y="1075" width="85" height="40" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Pelanggan_TerimaInvoice_di" bpmnElement="Event_Pelanggan_TerimaInvoice">
+        <dc:Bounds x="762" y="1032" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="742" y="1075" width="77" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pelanggan_Bayar_di" bpmnElement="Task_Pelanggan_Bayar">
+        <dc:Bounds x="850" y="1010" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pelanggan_KirimRemittance_di" bpmnElement="Task_Pelanggan_KirimRemittance">
+        <dc:Bounds x="1000" y="1010" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_Pelanggan_TerimaKuitansi_di" bpmnElement="Event_Pelanggan_TerimaKuitansi">
+        <dc:Bounds x="1152" y="1032" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1130" y="1075" width="80" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Pelanggan_di" bpmnElement="End_Pelanggan">
+        <dc:Bounds x="1242" y="1032" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1220" y="1075" width="80" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
 
-  <bpmndi:BPMNDiagram id="BPMNDiagram_Expenditure">
-    <bpmndi:BPMNPlane id="BPMNPlane_Expenditure" bpmnElement="Collaboration_Expenditure">
-      <bpmndi:BPMNShape id="Participant_BeeCycle_Expenditure_di" bpmnElement="Participant_BeeCycle_Expenditure" isHorizontal="true">
-        <dc:Bounds x="100" y="100" width="1000" height="600" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_Manajer_di" bpmnElement="Lane_Manajer" isHorizontal="true">
-        <dc:Bounds x="130" y="100" width="970" height="200" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_Gudang_Exp_di" bpmnElement="Lane_Gudang_Exp" isHorizontal="true">
-        <dc:Bounds x="130" y="300" width="970" height="200" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_Keuangan_Exp_di" bpmnElement="Lane_Keuangan_Exp" isHorizontal="true">
-        <dc:Bounds x="130" y="500" width="970" height="200" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="sf_p1_di" bpmnElement="sf_p1"><di:waypoint x="278" y="180" /><di:waypoint x="330" y="180" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_p2_di" bpmnElement="sf_p2"><di:waypoint x="430" y="180" /><di:waypoint x="480" y="180" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="assoc_so_datastore_di" bpmnElement="assoc_so_datastore"><di:waypoint x="380" y="220" /><di:waypoint x="380" y="235" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_p3_di" bpmnElement="sf_p3"><di:waypoint x="580" y="180" /><di:waypoint x="635" y="180" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_p4_di" bpmnElement="sf_p4"><di:waypoint x="660" y="155" /><di:waypoint x="660" y="140" /><di:waypoint x="740" y="140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_p5_di" bpmnElement="sf_p5"><di:waypoint x="660" y="205" /><di:waypoint x="660" y="240" /><di:waypoint x="740" y="240" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_p6_di" bpmnElement="sf_p6"><di:waypoint x="685" y="180" /><di:waypoint x="890" y="180" /></bpmndi:BPMNEdge>
       
-      <bpmndi:BPMNShape id="Participant_Pemasok_di" bpmnElement="Participant_Pemasok" isHorizontal="true">
-        <dc:Bounds x="100" y="800" width="1000" height="100" />
-      </bpmndi:BPMNShape>
-      </bpmndi:BPMNPlane>
+      <bpmndi:BPMNEdge id="sf_g1_di" bpmnElement="sf_g1"><di:waypoint x="790" y="180" /><di:waypoint x="790" y="300" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g2_di" bpmnElement="sf_g2"><di:waypoint x="840" y="340" /><di:waypoint x="890" y="340" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="assoc_picking_datastore_di" bpmnElement="assoc_picking_datastore"><di:waypoint x="940" y="380" /><di:waypoint x="940" y="395" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g3_di" bpmnElement="sf_g3"><di:waypoint x="990" y="340" /><di:waypoint x="1040" y="340" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g4_di" bpmnElement="sf_g4"><di:waypoint x="1140" y="340" /><di:waypoint x="1190" y="340" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g5_di" bpmnElement="sf_g5"><di:waypoint x="1290" y="340" /><di:waypoint x="1340" y="340" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g6_di" bpmnElement="sf_g6"><di:waypoint x="1440" y="340" /><di:waypoint x="1490" y="340" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="assoc_packing_datastore_di" bpmnElement="assoc_packing_datastore"><di:waypoint x="1540" y="380" /><di:waypoint x="1540" y="395" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g7_di" bpmnElement="sf_g7"><di:waypoint x="1590" y="340" /><di:waypoint x="1640" y="340" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g8_di" bpmnElement="sf_g8"><di:waypoint x="1540" y="300" /><di:waypoint x="1540" y="270" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="assoc_notice_datastore_di" bpmnElement="assoc_notice_datastore"><di:waypoint x="1540" y="190" /><di:waypoint x="1540" y="175" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g9_di" bpmnElement="sf_g9"><di:waypoint x="1590" y="230" /><di:waypoint x="1640" y="230" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g10_di" bpmnElement="sf_g10"><di:waypoint x="1740" y="230" /><di:waypoint x="1795" y="230" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g11_di" bpmnElement="sf_g11"><di:waypoint x="1820" y="255" /><di:waypoint x="1820" y="430" /><di:waypoint x="1740" y="430" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_g12_di" bpmnElement="sf_g12"><di:waypoint x="1820" y="255" /><di:waypoint x="1820" y="300" /></bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="sf_pe1_di" bpmnElement="sf_pe1"><di:waypoint x="1690" y="470" /><di:waypoint x="1690" y="540" /><di:waypoint x="1590" y="540" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_pe2_di" bpmnElement="sf_pe2"><di:waypoint x="1490" y="540" /><di:waypoint x="1440" y="540" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_pe3_di" bpmnElement="sf_pe3"><di:waypoint x="1340" y="540" /><di:waypoint x="1290" y="540" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_pe4_di" bpmnElement="sf_pe4"><di:waypoint x="1190" y="540" /><di:waypoint x="1140" y="540" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_pe5_di" bpmnElement="sf_pe5"><di:waypoint x="1040" y="540" /><di:waypoint x="990" y="540" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_pe6_di" bpmnElement="sf_pe6"><di:waypoint x="890" y="540" /><di:waypoint x="840" y="540" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_pe7_di" bpmnElement="sf_pe7"><di:waypoint x="740" y="540" /><di:waypoint x="685" y="540" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_pe8_di" bpmnElement="sf_pe8"><di:waypoint x="635" y="540" /><di:waypoint x="580" y="540" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_pe9_di" bpmnElement="sf_pe9"><di:waypoint x="660" y="565" /><di:waypoint x="660" y="640" /><di:waypoint x="580" y="640" /></bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="sf_k_join1_di" bpmnElement="sf_k_join1"><di:waypoint x="790" y="280" /><di:waypoint x="790" y="770" /><di:waypoint x="405" y="770" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k_join2_di" bpmnElement="sf_k_join2"><di:waypoint x="530" y="580" /><di:waypoint x="530" y="770" /><di:waypoint x="405" y="770" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k1_di" bpmnElement="sf_k1"><di:waypoint x="405" y="770" /><di:waypoint x="480" y="770" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k2_di" bpmnElement="sf_k2"><di:waypoint x="580" y="770" /><di:waypoint x="630" y="770" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="assoc_invoice_datastore_di" bpmnElement="assoc_invoice_datastore"><di:waypoint x="680" y="810" /><di:waypoint x="680" y="825" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k3_di" bpmnElement="sf_k3"><di:waypoint x="730" y="770" /><di:waypoint x="780" y="770" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k4_di" bpmnElement="sf_k4"><di:waypoint x="880" y="770" /><di:waypoint x="935" y="770" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k5_di" bpmnElement="sf_k5"><di:waypoint x="985" y="770" /><di:waypoint x="1040" y="770" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k6_di" bpmnElement="sf_k6"><di:waypoint x="960" y="795" /><di:waypoint x="960" y="860" /><di:waypoint x="1040" y="860" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k7_di" bpmnElement="sf_k7"><di:waypoint x="1140" y="860" /><di:waypoint x="1192" y="860" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k8_di" bpmnElement="sf_k8"><di:waypoint x="1228" y="860" /><di:waypoint x="1280" y="860" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k9_di" bpmnElement="sf_k9"><di:waypoint x="1380" y="860" /><di:waypoint x="1435" y="860" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k_yes_di" bpmnElement="sf_k_yes"><di:waypoint x="1485" y="860" /><di:waypoint x="1540" y="860" /><bpmndi:BPMNLabel><dc:Bounds x="1503" y="842" width="34" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k_no_di" bpmnElement="sf_k_no"><di:waypoint x="1460" y="835" /><di:waypoint x="1460" y="780" /><bpmndi:BPMNLabel><dc:Bounds x="1431" y="805" width="28" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k10_di" bpmnElement="sf_k10"><di:waypoint x="1640" y="860" /><di:waypoint x="1690" y="860" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="assoc_kuitansi_datastore_di" bpmnElement="assoc_kuitansi_datastore"><di:waypoint x="1590" y="820" /><di:waypoint x="1590" y="805" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k11_di" bpmnElement="sf_k11"><di:waypoint x="1790" y="860" /><di:waypoint x="1815" y="860" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k12_di" bpmnElement="sf_k12"><di:waypoint x="1840" y="835" /><di:waypoint x="1840" y="760" /><di:waypoint x="1820" y="760" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k13_di" bpmnElement="sf_k13"><di:waypoint x="1840" y="835" /><di:waypoint x="1840" y="660" /><di:waypoint x="1790" y="660" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k14_di" bpmnElement="sf_k14"><di:waypoint x="1790" y="660" /><di:waypoint x="1782" y="660" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_k15_di" bpmnElement="sf_k15"><di:waypoint x="1510" y="740" /><di:waypoint x="1210" y="740" /><di:waypoint x="1210" y="842" /></bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="sf_c1_di" bpmnElement="sf_c1"><di:waypoint x="278" y="1050" /><di:waypoint x="330" y="1050" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_c2_di" bpmnElement="sf_c2"><di:waypoint x="430" y="1050" /><di:waypoint x="480" y="1050" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_c3_di" bpmnElement="sf_c3"><di:waypoint x="580" y="1050" /><di:waypoint x="642" y="1050" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_c4_di" bpmnElement="sf_c4"><di:waypoint x="678" y="1050" /><di:waypoint x="762" y="1050" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_c5_di" bpmnElement="sf_c5"><di:waypoint x="798" y="1050" /><di:waypoint x="850" y="1050" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_c6_di" bpmnElement="sf_c6"><di:waypoint x="950" y="1050" /><di:waypoint x="1000" y="1050" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_c7_di" bpmnElement="sf_c7"><di:waypoint x="1100" y="1050" /><di:waypoint x="1152" y="1050" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf_c8_di" bpmnElement="sf_c8"><di:waypoint x="1188" y="1050" /><di:waypoint x="1242" y="1050" /></bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PO_to_Sales_di" bpmnElement="Flow_PO_to_Sales">
+        <di:waypoint x="530" y="1010" />
+        <di:waypoint x="530" y="440" />
+        <di:waypoint x="260" y="440" />
+        <di:waypoint x="260" y="198" />
+        <bpmndi:BPMNLabel><dc:Bounds x="382" y="413" width="46" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Barang_to_Pelanggan_di" bpmnElement="Flow_Barang_to_Pelanggan">
+        <di:waypoint x="1240" y="580" />
+        <di:waypoint x="1240" y="1032" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1248" y="796" width="74" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Notice_to_Pelanggan_di" bpmnElement="Flow_Notice_to_Pelanggan">
+        <di:waypoint x="940" y="580" />
+        <di:waypoint x="940" y="1032" />
+        <bpmndi:BPMNLabel><dc:Bounds x="942" y="796" width="66" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Invoice_to_Pelanggan_di" bpmnElement="Flow_Invoice_to_Pelanggan">
+        <di:waypoint x="1090" y="810" />
+        <di:waypoint x="1090" y="1032" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1096" y="913" width="68" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Remittance_to_Keuangan_di" bpmnElement="Flow_Remittance_to_Keuangan">
+        <di:waypoint x="1050" y="1010" />
+        <di:waypoint x="1050" y="900" />
+        <di:waypoint x="1210" y="900" />
+        <di:waypoint x="1210" y="878" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1078" y="883" width_BPMNLabel="84" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Kuitansi_to_Pelanggan_di" bpmnElement="Flow_Kuitansi_to_Pelanggan">
+        <di:waypoint x="1770" y="800" />
+        <di:waypoint x="1770" y="1032" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1776" y="908" width="68" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 
 </bpmn:definitions>
-
