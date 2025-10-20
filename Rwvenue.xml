@@ -3,7 +3,7 @@
                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  id="Definitions_Revenue_Cycle"
+                  id="Definitions_Revenue_Cycle_UserTasks"
                   targetNamespace="http://bpmn.io/schema/bpmn">
 
   <bpmn:collaboration id="Collaboration_Revenue">
@@ -84,13 +84,13 @@
     <bpmn:startEvent id="StartEvent_PO_Diterima" name="PO Diterima">
       <bpmn:messageEventDefinition />
     </bpmn:startEvent>
-    <bpmn:task id="Task_Penjualan_BuatSO" name="Input PO, Buat Sales Order (SO)" />
+    <bpmn:userTask id="Task_Penjualan_BuatSO" name="Input PO, Buat Sales Order (SO)" />
     <bpmn:dataStoreReference id="DataStore_SO" name="Sales Order" />
-    <bpmn:task id="Task_Penjualan_CetakSO" name="Cetak SO (3 Rangkap)" />
+    <bpmn:userTask id="Task_Penjualan_CetakSO" name="Cetak SO (3 Rangkap)" />
     <bpmn:parallelGateway id="Gateway_Penjualan_Split" name="Distribusi SO" />
-    <bpmn:task id="Task_Penjualan_KirimGudang" name="Kirim SO ke Gudang" />
-    <bpmn:task id="Task_Penjualan_KirimKeuangan" name="Kirim SO ke Keuangan" />
-    <bpmn:task id="Task_Penjualan_Arsip" name="Arsipkan SO" />
+    <bpmn:userTask id="Task_Penjualan_KirimGudang" name="Kirim SO ke Gudang" />
+    <bpmn:userTask id="Task_Penjualan_KirimKeuangan" name="Kirim SO ke Keuangan" />
+    <bpmn:userTask id="Task_Penjualan_Arsip" name="Arsipkan SO" />
     <bpmn:sequenceFlow id="sf_p1" sourceRef="StartEvent_PO_Diterima" targetRef="Task_Penjualan_BuatSO" />
     <bpmn:sequenceFlow id="sf_p2" sourceRef="Task_Penjualan_BuatSO" targetRef="Task_Penjualan_CetakSO" />
     <bpmn:association id="assoc_so_datastore" sourceRef="Task_Penjualan_BuatSO" targetRef="DataStore_SO" />
@@ -99,21 +99,21 @@
     <bpmn:sequenceFlow id="sf_p5" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_KirimKeuangan" />
     <bpmn:sequenceFlow id="sf_p6" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_Arsip" />
 
-    <bpmn:task id="Task_Gudang_TerimaSO" name="Terima SO" />
-    <bpmn:task id="Task_Gudang_BuatPicking" name="Buat Picking List" />
+    <bpmn:userTask id="Task_Gudang_TerimaSO" name="Terima SO" />
+    <bpmn:userTask id="Task_Gudang_BuatPicking" name="Buat Picking List" />
     <bpmn:dataStoreReference id="DataStore_PickingList" name="Picking List" />
-    <bpmn:task id="Task_Gudang_CetakPicking" name="Cetak Picking List" />
-    <bpmn:task id="Task_Gudang_AmbilBarang" name="Ambil Sepeda" />
-    <bpmn:task id="Task_Gudang_Kemas" name="Kemas Sepeda" />
-    <bpmn:task id="Task_Gudang_InputPacking" name="Input Data Packing" />
+    <bpmn:userTask id="Task_Gudang_CetakPicking" name="Cetak Picking List" />
+    <bpmn:userTask id="Task_Gudang_AmbilBarang" name="Ambil Sepeda" />
+    <bpmn:userTask id="Task_Gudang_Kemas" name="Kemas Sepeda" />
+    <bpmn:userTask id="Task_Gudang_InputPacking" name="Input Data Packing" />
     <bpmn:dataStoreReference id="DataStore_PackingList" name="Packing List" />
-    <bpmn:task id="Task_Gudang_CetakSlip" name="Cetak &amp; Tempel Goods Packing Slip" />
-    <bpmn:task id="Task_Gudang_BuatNotice" name="Buat Shipping Notice" />
+    <bpmn:userTask id="Task_Gudang_CetakSlip" name="Cetak &amp; Tempel Goods Packing Slip" />
+    <bpmn:userTask id="Task_Gudang_BuatNotice" name="Buat Shipping Notice" />
     <bpmn:dataStoreReference id="DataStore_ShippingNotice" name="Shipping Notice" />
-    <bpmn:task id="Task_Gudang_CetakNotice" name="Cetak Shipping Notice (4 Rangkap)" />
+    <bpmn:userTask id="Task_Gudang_CetakNotice" name="Cetak Shipping Notice (4 Rangkap)" />
     <bpmn:parallelGateway id="Gateway_Gudang_Split" name="Distribusi Notice" />
-    <bpmn:task id="Task_Gudang_KirimPengiriman" name="Kirim 3 rangkap ke Pengiriman" />
-    <bpmn:task id="Task_Gudang_Arsip" name="Arsipkan 1 rangkap" />
+    <bpmn:userTask id="Task_Gudang_KirimPengiriman" name="Kirim 3 rangkap ke Pengiriman" />
+    <bpmn:userTask id="Task_Gudang_Arsip" name="Arsipkan 1 rangkap" />
     <bpmn:sequenceFlow id="sf_g1" sourceRef="Task_Penjualan_KirimGudang" targetRef="Task_Gudang_TerimaSO" />
     <bpmn:sequenceFlow id="sf_g2" sourceRef="Task_Gudang_TerimaSO" targetRef="Task_Gudang_BuatPicking" />
     <bpmn:association id="assoc_picking_datastore" sourceRef="Task_Gudang_BuatPicking" targetRef="DataStore_PickingList" />
@@ -130,15 +130,15 @@
     <bpmn:sequenceFlow id="sf_g11" sourceRef="Gateway_Gudang_Split" targetRef="Task_Gudang_KirimPengiriman" />
     <bpmn:sequenceFlow id="sf_g12" sourceRef="Gateway_Gudang_Split" targetRef="Task_Gudang_Arsip" />
 
-    <bpmn:task id="Task_Pengiriman_TerimaNotice" name="Terima 3 Shipping Notice" />
-    <bpmn:task id="Task_Pengiriman_AmbilBarang" name="Ambil Barang" />
-    <bpmn:task id="Task_Pengiriman_Kirim" name="Kirim ke Pelanggan" />
-    <bpmn:task id="Task_Pengiriman_DapatTTD" name="Dapatkan TTD Pelanggan" />
-    <bpmn:task id="Task_Pengiriman_BeriNotice" name="Berikan rangkap 2 ke Pelanggan" />
-    <bpmn:task id="Task_Pengiriman_Kembali" name="Kembali ke Kantor" />
+    <bpmn:userTask id="Task_Pengiriman_TerimaNotice" name="Terima 3 Shipping Notice" />
+    <bpmn:userTask id="Task_Pengiriman_AmbilBarang" name="Ambil Barang" />
+    <bpmn:userTask id="Task_Pengiriman_Kirim" name="Kirim ke Pelanggan" />
+    <bpmn:userTask id="Task_Pengiriman_DapatTTD" name="Dapatkan TTD Pelanggan" />
+    <bpmn:userTask id="Task_Pengiriman_BeriNotice" name="Berikan rangkap 2 ke Pelanggan" />
+    <bpmn:userTask id="Task_Pengiriman_Kembali" name="Kembali ke Kantor" />
     <bpmn:parallelGateway id="Gateway_Pengiriman_Split" name="Distribusi Sisa Notice" />
-    <bpmn:task id="Task_Pengiriman_KirimKeuangan" name="Kirim rangkap 1 ke Keuangan" />
-    <bpmn:task id="Task_Pengiriman_Arsip" name="Arsipkan rangkap 3" />
+    <bpmn:userTask id="Task_Pengiriman_KirimKeuangan" name="Kirim rangkap 1 ke Keuangan" />
+    <bpmn:userTask id="Task_Pengiriman_Arsip" name="Arsipkan rangkap 3" />
     <bpmn:sequenceFlow id="sf_pe1" sourceRef="Task_Gudang_KirimPengiriman" targetRef="Task_Pengiriman_TerimaNotice" />
     <bpmn:sequenceFlow id="sf_pe2" sourceRef="Task_Pengiriman_TerimaNotice" targetRef="Task_Pengiriman_AmbilBarang" />
     <bpmn:sequenceFlow id="sf_pe3" sourceRef="Task_Pengiriman_AmbilBarang" targetRef="Task_Pengiriman_Kirim" />
@@ -150,26 +150,26 @@
     <bpmn:sequenceFlow id="sf_pe9" sourceRef="Gateway_Pengiriman_Split" targetRef="Task_Pengiriman_Arsip" />
 
     <bpmn:parallelGateway id="Gateway_Keuangan_Join" name="Tunggu Dokumen (SO &amp; Notice)" />
-    <bpmn:task id="Task_Keuangan_Cocokkan" name="Cocokkan SO &amp; Shipping Notice TTD" />
-    <bpmn:task id="Task_Keuangan_BuatInvoice" name="Buat Invoice" />
+    <bpmn:userTask id="Task_Keuangan_Cocokkan" name="Cocokkan SO &amp; Shipping Notice TTD" />
+    <bpmn:userTask id="Task_Keuangan_BuatInvoice" name="Buat Invoice" />
     <bpmn:dataStoreReference id="DataStore_Invoice" name="Invoice" />
-    <bpmn:task id="Task_Keuangan_CetakInvoice" name="Cetak Invoice (2 Rangkap)" />
+    <bpmn:userTask id="Task_Keuangan_CetakInvoice" name="Cetak Invoice (2 Rangkap)" />
     <bpmn:parallelGateway id="Gateway_Keuangan_Split_Invoice" name="Distribusi Invoice" />
-    <bpmn:task id="Task_Keuangan_KirimInvoice" name="Kirim Invoice ke Pelanggan" />
-    <bpmn:task id="Task_Keuangan_ArsipInvoice" name="Arsipkan Invoice, SO, Notice" />
+    <bpmn:userTask id="Task_Keuangan_KirimInvoice" name="Kirim Invoice ke Pelanggan" />
+    <bpmn:userTask id="Task_Keuangan_ArsipInvoice" name="Arsipkan Invoice, SO, Notice" />
     <bpmn:intermediateCatchEvent id="Event_Keuangan_TerimaRemittance" name="Remittance Advice Diterima">
       <bpmn:messageEventDefinition />
     </bpmn:intermediateCatchEvent>
-    <bpmn:task id="Task_Keuangan_CocokkanRemittance" name="Cocokkan Remittance &amp; Invoice" />
+    <bpmn:userTask id="Task_Keuangan_CocokkanRemittance" name="Cocokkan Remittance &amp; Invoice" />
     <bpmn:exclusiveGateway id="Gateway_Keuangan_Decision" name="Pembayaran Sesuai?" />
-    <bpmn:task id="Task_Keuangan_BuatKuitansi" name="Buat Kuitansi" />
+    <bpmn:userTask id="Task_Keuangan_BuatKuitansi" name="Buat Kuitansi" />
     <bpmn:dataStoreReference id="DataStore_Kuitansi" name="Kuitansi" />
-    <bpmn:task id="Task_Keuangan_CetakKuitansi" name="Cetak Kuitansi (2 Rangkap)" />
+    <bpmn:userTask id="Task_Keuangan_CetakKuitansi" name="Cetak Kuitansi (2 Rangkap)" />
     <bpmn:parallelGateway id="Gateway_Keuangan_Split_Kuitansi" name="Distribusi Kuitansi" />
-    <bpmn:task id="Task_Keuangan_KirimKuitansi" name="Berikan Kuitansi ke Pelanggan" />
-    <bpmn:task id="Task_Keuangan_ArsipKuitansi" name="Arsipkan Kuitansi &amp; Remittance" />
+    <bpmn:userTask id="Task_Keuangan_KirimKuitansi" name="Berikan Kuitansi ke Pelanggan" />
+    <bpmn:userTask id="Task_Keuangan_ArsipKuitansi" name="Arsipkan Kuitansi &amp; Remittance" />
     <bpmn:endEvent id="EndEvent_Lunas" name="Lunas" />
-    <bpmn:task id="Task_Keuangan_HubungiPelanggan" name="Hubungi Pelanggan (Kekurangan)" />
+    <bpmn:userTask id="Task_Keuangan_HubungiPelanggan" name="Hubungi Pelanggan (Kekurangan)" />
     <bpmn:sequenceFlow id="sf_k_join1" sourceRef="Task_Penjualan_KirimKeuangan" targetRef="Gateway_Keuangan_Join" />
     <bpmn:sequenceFlow id="sf_k_join2" sourceRef="Task_Pengiriman_KirimKeuangan" targetRef="Gateway_Keuangan_Join" />
     <bpmn:sequenceFlow id="sf_k1" sourceRef="Gateway_Keuangan_Join" targetRef="Task_Keuangan_Cocokkan" />
@@ -195,16 +195,16 @@
 
   <bpmn:process id="Process_Pelanggan" isExecutable="false">
     <bpmn:startEvent id="Start_Pelanggan" name="Mulai Pesan" />
-    <bpmn:task id="Task_Pelanggan_BuatPO" name="Buat Purchase Order (PO)" />
-    <bpmn:task id="Task_Pelanggan_KirimPO" name="Kirim PO" />
+    <bpmn:userTask id="Task_Pelanggan_BuatPO" name="Buat Purchase Order (PO)" />
+    <bpmn:userTask id="Task_Pelanggan_KirimPO" name="Kirim PO" />
     <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaBarang" name="Terima Barang, Notice &amp; TTD">
       <bpmn:messageEventDefinition />
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaInvoice" name="Terima Invoice">
       <bpmn:messageEventDefinition />
     </bpmn:intermediateCatchEvent>
-    <bpmn:task id="Task_Pelanggan_Bayar" name="Lakukan Pembayaran" />
-    <bpmn:task id="Task_Pelanggan_KirimRemittance" name="Kirim Remittance Advice" />
+    <bpmn:userTask id="Task_Pelanggan_Bayar" name="Lakukan Pembayaran" />
+    <bpmn:userTask id="Task_Pelanggan_KirimRemittance" name="Kirim Remittance Advice" />
     <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaKuitansi" name="Terima Kuitansi">
       <bpmn:messageEventDefinition />
     </bpmn:intermediateCatchEvent>
@@ -430,7 +430,7 @@
       <bpmndi:BPMNShape id="Event_Pelanggan_TerimaInvoice_di" bpmnElement="Event_Pelanggan_TerimaInvoice">
         <dc:Bounds x="762" y="1032" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="742" y="1075" width="77" height="14" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
+      </tamd:BPMNShape>
       <bpmndi:BPMNShape id="Task_Pelanggan_Bayar_di" bpmnElement="Task_Pelanggan_Bayar">
         <dc:Bounds x="850" y="1010" width="100" height="80" />
       </bpmndi:BPMNShape>
