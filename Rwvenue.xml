@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_BeeCycle_Processes"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <bpmn:collaboration id="Collaboration_Revenue">
+    <bpmn:participant id="Participant_BeeCycle_Revenue" name="BeeCycle (Penjualan)" processRef="Process_Revenue" />
+    <bpmn:participant id="Participant_Pelanggan" name="Pelanggan (Customer)" processRef="Process_Pelanggan" />
+
+    <bpmn:messageFlow id="Flow_PO_to_Sales" name="Kirim PO" sourceRef="Task_Pelanggan_KirimPO" targetRef="StartEvent_PO_Diterima" />
+    <bpmn:messageFlow id="Flow_Barang_to_Pelanggan" name="Kirim Barang &amp; Notice" sourceRef="Task_Pengiriman_Kirim" targetRef="Event_Pelanggan_TerimaBarang" />
+    <bpmn:messageFlow id="Flow_Invoice_to_Pelanggan" name="Kirim Invoice" sourceRef="Task_Keuangan_KirimInvoice" targetRef="Event_Pelanggan_TerimaInvoice" />
+    <bpmn:messageFlow id="Flow_Remittance_to_Keuangan" name="Kirim Bukti Bayar" sourceRef="Task_Pelanggan_KirimRemittance" targetRef="Event_Keuangan_TerimaRemittance" />
+    <bpmn:messageFlow id="Flow_Kuitansi_to_Pelanggan" name="Kirim Kuitansi" sourceRef="Task_Keuangan_KirimKuitansi" targetRef="Event_Pelanggan_TerimaKuitansi" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_Revenue" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Revenue">
+      <bpmn:lane id="Lane_Penjualan" name="Bagian Penjualan">
+        <bpmn:flowNodeRef>StartEvent_PO_Diterima</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Penjualan_BuatSO</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>DataStore_SO</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Penjualan_CetakSO</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Penjualan_Split</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Penjualan_KirimGudang</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Penjualan_KirimKeuangan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Penjualan_Arsip</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Gudang" name="Bagian Gudang">
+        <bpmn:flowNodeRef>Task_Gudang_TerimaSO</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_BuatPicking</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>DataStore_PickingList</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_CetakPicking</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_AmbilBarang</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_Kemas</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_InputPacking</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>DataStore_PackingList</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_CetakSlip</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_BuatNotice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>DataStore_ShippingNotice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_CetakNotice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Gudang_Split</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_KirimPengiriman</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_Arsip</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Pengiriman" name="Bagian Pengiriman">
+        <bpmn:flowNodeRef>Task_Pengiriman_TerimaNotice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Pengiriman_AmbilBarang</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Pengiriman_Kirim</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Pengiriman_DapatTTD</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Pengiriman_BeriNotice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Pengiriman_Kembali</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Pengiriman_Split</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Pengiriman_KirimKeuangan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Pengiriman_Arsip</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Keuangan" name="Bagian Keuangan">
+        <bpmn:flowNodeRef>Gateway_Keuangan_Join</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_Cocokkan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_BuatInvoice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>DataStore_Invoice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_CetakInvoice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Keuangan_Split_Invoice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_KirimInvoice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_ArsipInvoice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_Keuangan_TerimaRemittance</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_CocokkanRemittance</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Keuangan_Decision</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_BuatKuitansi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>DataStore_Kuitansi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_CetakKuitansi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Keuangan_Split_Kuitansi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_KirimKuitansi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_ArsipKuitansi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Lunas</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_HubungiPelanggan</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="StartEvent_PO_Diterima" name="PO Diterima">
+      <bpmn:messageEventDefinition />
+    </bpmn:startEvent>
+    <bpmn:task id="Task_Penjualan_BuatSO" name="Input PO, Buat Sales Order (SO)" />
+    <bpmn:dataStoreReference id="DataStore_SO" name="Sales Order" />
+    <bpmn:task id="Task_Penjualan_CetakSO" name="Cetak SO (3 Rangkap)" />
+    <bpmn:parallelGateway id="Gateway_Penjualan_Split" name="Distribusi SO" />
+    <bpmn:task id="Task_Penjualan_KirimGudang" name="Kirim SO ke Gudang" />
+    <bpmn:task id="Task_Penjualan_KirimKeuangan" name="Kirim SO ke Keuangan" />
+    <bpmn:task id="Task_Penjualan_Arsip" name="Arsipkan SO" />
+    <bpmn:sequenceFlow id="sf1" sourceRef="StartEvent_PO_Diterima" targetRef="Task_Penjualan_BuatSO" />
+    <bpmn:sequenceFlow id="sf2" sourceRef="Task_Penjualan_BuatSO" targetRef="Task_Penjualan_CetakSO" />
+    <bpmn:association id="assoc_so_datastore" sourceRef="Task_Penjualan_BuatSO" targetRef="DataStore_SO" />
+    <bpmn:sequenceFlow id="sf3" sourceRef="Task_Penjualan_CetakSO" targetRef="Gateway_Penjualan_Split" />
+    <bpmn:sequenceFlow id="sf4" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_KirimGudang" />
+    <bpmn:sequenceFlow id="sf5" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_KirimKeuangan" />
+    <bpmn:sequenceFlow id="sf6" sourceRef="Gateway_Penjualan_Split" targetRef="Task_Penjualan_Arsip" />
+
+    <bpmn:task id="Task_Gudang_TerimaSO" name="Terima SO" />
+    <bpmn:task id="Task_Gudang_BuatPicking" name="Buat Picking List" />
+    <bpmn:dataStoreReference id="DataStore_PickingList" name="Picking List" />
+    <bpmn:task id="Task_Gudang_CetakPicking" name="Cetak Picking List" />
+    <bpmn:task id="Task_Gudang_AmbilBarang" name="Ambil Sepeda" />
+    <bpmn:task id="Task_Gudang_Kemas" name="Kemas Sepeda" />
+    <bpmn:task id="Task_Gudang_InputPacking" name="Input Data Packing" />
+    <bpmn:dataStoreReference id="DataStore_PackingList" name="Packing List" />
+    <bpmn:task id="Task_Gudang_CetakSlip" name="Cetak &amp; Tempel Goods Packing Slip" />
+    <bpmn:task id="Task_Gudang_BuatNotice" name="Buat Shipping Notice" />
+    <bpmn:dataStoreReference id="DataStore_ShippingNotice" name="Shipping Notice" />
+    <bpmn:task id="Task_Gudang_CetakNotice" name="Cetak Shipping Notice (4 Rangkap)" />
+    <bpmn:parallelGateway id="Gateway_Gudang_Split" name="Distribusi Notice" />
+    <bpmn:task id="Task_Gudang_KirimPengiriman" name="Kirim 3 rangkap ke Pengiriman" />
+    <bpmn:task id="Task_Gudang_Arsip" name="Arsipkan 1 rangkap" />
+    <bpmn:sequenceFlow id="sf_g1" sourceRef="Task_Penjualan_KirimGudang" targetRef="Task_Gudang_TerimaSO" />
+    <bpmn:sequenceFlow id="sf_g2" sourceRef="Task_Gudang_TerimaSO" targetRef="Task_Gudang_BuatPicking" />
+    <bpmn:association id="assoc_picking_datastore" sourceRef="Task_Gudang_BuatPicking" targetRef="DataStore_PickingList" />
+    <bpmn:sequenceFlow id="sf_g3" sourceRef="Task_Gudang_BuatPicking" targetRef="Task_Gudang_CetakPicking" />
+    <bpmn:sequenceFlow id="sf_g4" sourceRef="Task_Gudang_CetakPicking" targetRef="Task_Gudang_AmbilBarang" />
+    <bpmn:sequenceFlow id="sf_g5" sourceRef="Task_Gudang_AmbilBarang" targetRef="Task_Gudang_Kemas" />
+    <bpmn:sequenceFlow id="sf_g6" sourceRef="Task_Gudang_Kemas" targetRef="Task_Gudang_InputPacking" />
+    <bpmn:association id="assoc_packing_datastore" sourceRef="Task_Gudang_InputPacking" targetRef="DataStore_PackingList" />
+    <bpmn:sequenceFlow id="sf_g7" sourceRef="Task_Gudang_InputPacking" targetRef="Task_Gudang_CetakSlip" />
+    <bpmn:sequenceFlow id="sf_g8" sourceRef="Task_Gudang_CetakSlip" targetRef="Task_Gudang_BuatNotice" />
+    <bpmn:association id="assoc_notice_datastore" sourceRef="Task_Gudang_BuatNotice" targetRef="DataStore_ShippingNotice" />
+    <bpmn:sequenceFlow id="sf_g9" sourceRef="Task_Gudang_BuatNotice" targetRef="Task_Gudang_CetakNotice" />
+    <bpmn:sequenceFlow id="sf_g10" sourceRef="Task_Gudang_CetakNotice" targetRef="Gateway_Gudang_Split" />
+    <bpmn:sequenceFlow id="sf_g11" sourceRef="Gateway_Gudang_Split" targetRef="Task_Gudang_KirimPengiriman" />
+    <bpmn:sequenceFlow id="sf_g12" sourceRef="Gateway_Gudang_Split" targetRef="Task_Gudang_Arsip" />
+
+    <bpmn:task id="Task_Pengiriman_TerimaNotice" name="Terima 3 Shipping Notice" />
+    <bpmn:task id="Task_Pengiriman_AmbilBarang" name="Ambil Barang" />
+    <bpmn:task id="Task_Pengiriman_Kirim" name="Kirim ke Pelanggan" />
+    <bpmn:task id="Task_Pengiriman_DapatTTD" name="Dapatkan TTD Pelanggan" />
+    <bpmn:task id="Task_Pengiriman_BeriNotice" name="Berikan rangkap 2 ke Pelanggan" />
+    <bpmn:task id="Task_Pengiriman_Kembali" name="Kembali ke Kantor" />
+    <bpmn:parallelGateway id="Gateway_Pengiriman_Split" name="Distribusi Sisa Notice" />
+    <bpmn:task id="Task_Pengiriman_KirimKeuangan" name="Kirim rangkap 1 ke Keuangan" />
+    <bpmn:task id="Task_Pengiriman_Arsip" name="Arsipkan rangkap 3" />
+    <bpmn:sequenceFlow id="sf_p1" sourceRef="Task_Gudang_KirimPengiriman" targetRef="Task_Pengiriman_TerimaNotice" />
+    <bpmn:sequenceFlow id="sf_p2" sourceRef="Task_Pengiriman_TerimaNotice" targetRef="Task_Pengiriman_AmbilBarang" />
+    <bpmn:sequenceFlow id="sf_p3" sourceRef="Task_Pengiriman_AmbilBarang" targetRef="Task_Pengiriman_Kirim" />
+    <bpmn:sequenceFlow id="sf_p4" sourceRef="Task_Pengiriman_Kirim" targetRef="Task_Pengiriman_DapatTTD" />
+    <bpmn:sequenceFlow id="sf_p5" sourceRef="Task_Pengiriman_DapatTTD" targetRef="Task_Pengiriman_BeriNotice" />
+    <bpmn:sequenceFlow id="sf_p6" sourceRef="Task_Pengiriman_BeriNotice" targetRef="Task_Pengiriman_Kembali" />
+    <bpmn:sequenceFlow id="sf_p7" sourceRef="Task_Pengiriman_Kembali" targetRef="Gateway_Pengiriman_Split" />
+    <bpmn:sequenceFlow id="sf_p8" sourceRef="Gateway_Pengiriman_Split" targetRef="Task_Pengiriman_KirimKeuangan" />
+    <bpmn:sequenceFlow id="sf_p9" sourceRef="Gateway_Pengiriman_Split" targetRef="Task_Pengiriman_Arsip" />
+
+    <bpmn:parallelGateway id="Gateway_Keuangan_Join" name="Tunggu Dokumen (SO &amp; Notice)" />
+    <bpmn:task id="Task_Keuangan_Cocokkan" name="Cocokkan SO &amp; Shipping Notice TTD" />
+    <bpmn:task id="Task_Keuangan_BuatInvoice" name="Buat Invoice" />
+    <bpmn:dataStoreReference id="DataStore_Invoice" name="Invoice" />
+    <bpmn:task id="Task_Keuangan_CetakInvoice" name="Cetak Invoice (2 Rangkap)" />
+    <bpmn:parallelGateway id="Gateway_Keuangan_Split_Invoice" name="Distribusi Invoice" />
+    <bpmn:task id="Task_Keuangan_KirimInvoice" name="Kirim Invoice ke Pelanggan" />
+    <bpmn:task id="Task_Keuangan_ArsipInvoice" name="Arsipkan Invoice, SO, Notice" />
+    <bpmn:intermediateCatchEvent id="Event_Keuangan_TerimaRemittance" name="Remittance Advice Diterima">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_Keuangan_CocokkanRemittance" name="Cocokkan Remittance &amp; Invoice" />
+    <bpmn:exclusiveGateway id="Gateway_Keuangan_Decision" name="Pembayaran Sesuai?" />
+    <bpmn:task id="Task_Keuangan_BuatKuitansi" name="Buat Kuitansi" />
+    <bpmn:dataStoreReference id="DataStore_Kuitansi" name="Kuitansi" />
+    <bpmn:task id="Task_Keuangan_CetakKuitansi" name="Cetak Kuitansi (2 Rangkap)" />
+    <bpmn:parallelGateway id="Gateway_Keuangan_Split_Kuitansi" name="Distribusi Kuitansi" />
+    <bpmn:task id="Task_Keuangan_KirimKuitansi" name="Berikan Kuitansi ke Pelanggan" />
+    <bpmn:task id="Task_Keuangan_ArsipKuitansi" name="Arsipkan Kuitansi &amp; Remittance" />
+    <bpmn:endEvent id="EndEvent_Lunas" name="Lunas" />
+    <bpmn:task id="Task_Keuangan_HubungiPelanggan" name="Hubungi Pelanggan (Kekurangan)" />
+    <bpmn:sequenceFlow id="sf_k_join1" sourceRef="Task_Penjualan_KirimKeuangan" targetRef="Gateway_Keuangan_Join" />
+    <bpmn:sequenceFlow id="sf_k_join2" sourceRef="Task_Pengiriman_KirimKeuangan" targetRef="Gateway_Keuangan_Join" />
+    <bpmn:sequenceFlow id="sf_k1" sourceRef="Gateway_Keuangan_Join" targetRef="Task_Keuangan_Cocokkan" />
+    <bpmn:sequenceFlow id="sf_k2" sourceRef="Task_Keuangan_Cocokkan" targetRef="Task_Keuangan_BuatInvoice" />
+    <bpmn:association id="assoc_invoice_datastore" sourceRef="Task_Keuangan_BuatInvoice" targetRef="DataStore_Invoice" />
+    <bpmn:sequenceFlow id="sf_k3" sourceRef="Task_Keuangan_BuatInvoice" targetRef="Task_Keuangan_CetakInvoice" />
+    <bpmn:sequenceFlow id="sf_k4" sourceRef="Task_Keuangan_CetakInvoice" targetRef="Gateway_Keuangan_Split_Invoice" />
+    <bpmn:sequenceFlow id="sf_k5" sourceRef="Gateway_Keuangan_Split_Invoice" targetRef="Task_Keuangan_KirimInvoice" />
+    <bpmn:sequenceFlow id="sf_k6" sourceRef="Gateway_Keuangan_Split_Invoice" targetRef="Task_Keuangan_ArsipInvoice" />
+    <bpmn:sequenceFlow id="sf_k7" sourceRef="Event_Keuangan_TerimaRemittance" targetRef="Task_Keuangan_CocokkanRemittance" />
+    <bpmn:sequenceFlow id="sf_k8" sourceRef="Task_Keuangan_CocokkanRemittance" targetRef="Gateway_Keuangan_Decision" />
+    <bpmn:sequenceFlow id="sf_k_yes" name="Sesuai" sourceRef="Gateway_Keuangan_Decision" targetRef="Task_Keuangan_BuatKuitansi" />
+    <bpmn:sequenceFlow id="sf_k_no" name="Tidak Sesuai" sourceRef="Gateway_Keuangan_Decision" targetRef="Task_Keuangan_HubungiPelanggan" />
+    <bpmn:sequenceFlow id="sf_k9" sourceRef="Task_Keuangan_BuatKuitansi" targetRef="Task_Keuangan_CetakKuitansi" />
+    <bpmn:association id="assoc_kuitansi_datastore" sourceRef="Task_Keuangan_BuatKuitansi" targetRef="DataStore_Kuitansi" />
+    <bpmn:sequenceFlow id="sf_k10" sourceRef="Task_Keuangan_CetakKuitansi" targetRef="Gateway_Keuangan_Split_Kuitansi" />
+    <bpmn:sequenceFlow id="sf_k11" sourceRef="Gateway_Keuangan_Split_Kuitansi" targetRef="Task_Keuangan_KirimKuitansi" />
+    <bpmn:sequenceFlow id="sf_k12" sourceRef="Gateway_Keuangan_Split_Kuitansi" targetRef="Task_Keuangan_ArsipKuitansi" />
+    <bpmn:sequenceFlow id="sf_k13" sourceRef="Task_Keuangan_ArsipKuitansi" targetRef="EndEvent_Lunas" />
+  </bpmn:process>
+
+  <bpmn:process id="Process_Pelanggan" isExecutable="false">
+    <bpmn:startEvent id="Start_Pelanggan" name="Mulai Pesan" />
+    <bpmn:task id="Task_Pelanggan_BuatPO" name="Buat Purchase Order (PO)" />
+    <bpmn:task id="Task_Pelanggan_KirimPO" name="Kirim PO" />
+    <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaBarang" name="Terima Barang &amp; Shipping Notice">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_Pelanggan_TandaTangan" name="Tanda Tangani Shipping Notice" />
+    <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaInvoice" name="Terima Invoice">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_Pelanggan_Bayar" name="Lakukan Pembayaran" />
+    <bpmn:task id="Task_Pelanggan_KirimRemittance" name="Kirim Remittance Advice" />
+    <bpmn:intermediateCatchEvent id="Event_Pelanggan_TerimaKuitansi" name="Terima Kuitansi">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="End_Pelanggan" name="Pesanan Selesai" />
+    <bpmn:sequenceFlow id="sf_c1" sourceRef="Start_Pelanggan" targetRef="Task_Pelanggan_BuatPO" />
+    <bpmn:sequenceFlow id="sf_c2" sourceRef="Task_Pelanggan_BuatPO" targetRef="Task_Pelanggan_KirimPO" />
+    <bpmn:sequenceFlow id="sf_c3" sourceRef="Event_Pelanggan_TerimaBarang" targetRef="Task_Pelanggan_TandaTangan" />
+    <bpmn:sequenceFlow id="sf_c4" sourceRef="Event_Pelanggan_TerimaInvoice" targetRef="Task_Pelanggan_Bayar" />
+    <bpmn:sequenceFlow id="sf_c5" sourceRef="Task_Pelanggan_Bayar" targetRef="Task_Pelanggan_KirimRemittance" />
+    <bpmn:sequenceFlow id="sf_c6" sourceRef="Event_Pelanggan_TerimaKuitansi" targetRef="End_Pelanggan" />
+  </bpmn:process>
+
+
+  <bpmn:collaboration id="Collaboration_Expenditure">
+    <bpmn:participant id="Participant_BeeCycle_Expenditure" name="BeeCycle (Pembelian)" processRef="Process_Expenditure" />
+    <bpmn:participant id="Participant_Pemasok" name="Pemasok (Supplier)" /> <bpmn:messageFlow id="Flow_SPP_to_Pemasok" name="Kirim SPP" sourceRef="Task_Manajer_KirimSPP" targetRef="Participant_Pemasok" />
+    <bpmn:messageFlow id="Flow_Barang_from_Pemasok" name="Kirim Barang &amp; Surat Jalan" sourceRef="Participant_Pemasok" targetRef="Event_Gudang_TerimaBarang" />
+    <bpmn:messageFlow id="Flow_Tagihan_from_Pemasok" name="Kirim Surat Tagihan" sourceRef="Participant_Pemasok" targetRef="Event_Keuangan_TerimaTagihan" />
+    <bpmn:messageFlow id="Flow_Bayar_to_Pemasok" name="Kirim Pembayaran" sourceRef="Task_Keuangan_Bayar" targetRef="Participant_Pemasok" />
+  </bpmn:collaboration>
+
+  <bpmn:process id="Process_Expenditure" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Expenditure">
+      <bpmn:lane id="Lane_Manajer" name="Manajer Toko">
+        <bpmn:flowNodeRef>StartEvent_AkhirBulan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Manajer_Inventaris</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Manajer_BuatSPP</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Manajer_KirimSPP</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Manajer_KirimKeuangan</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Gudang_Exp" name="Bagian Gudang">
+        <bpmn:flowNodeRef>Event_Gudang_TerimaBarang</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_Periksa</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_InputStok</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_CetakLPS</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gudang_KirimLPS</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Keuangan_Exp" name="Bagian Keuangan">
+        <bpmn:flowNodeRef>Gateway_Keuangan_Join_Exp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_Keuangan_TerimaTagihan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_Cocokkan3Way</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Keuangan_Decision_Exp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_Keuangan_Tunggu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_Bayar</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Lunas_Exp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Keuangan_Investigasi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Dispute_Exp</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="StartEvent_AkhirBulan" name="Setiap Akhir Bulan">
+      <bpmn:timerEventDefinition />
+    </bpmn:startEvent>
+    <bpmn:task id="Task_Manajer_Inventaris" name="Lakukan Inventarisasi Stok" />
+    <bpmn:task id="Task_Manajer_BuatSPP" name="Buat Surat Pesanan Pembelian (SPP)" />
+    <bpmn:task id="Task_Manajer_KirimSPP" name="Kirim SPP ke Pemasok" />
+    <bpmn:task id="Task_Manajer_KirimKeuangan" name="Kirim Salinan SPP ke Keuangan" />
+    <bpmn:sequenceFlow id="sf_m1" sourceRef="StartEvent_AkhirBulan" targetRef="Task_Manajer_Inventaris" />
+    <bpmn:sequenceFlow id="sf_m2" sourceRef="Task_Manajer_Inventaris" targetRef="Task_Manajer_BuatSPP" />
+    <bpmn:sequenceFlow id="sf_m3" sourceRef="Task_Manajer_BuatSPP" targetRef="Task_Manajer_KirimSPP" />
+    <bpmn:sequenceFlow id="sf_m4" sourceRef="Task_Manajer_BuatSPP" targetRef="Task_Manajer_KirimKeuangan" />
+
+    <bpmn:intermediateCatchEvent id="Event_Gudang_TerimaBarang" name="Barang Diterima">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_Gudang_Periksa" name="Periksa Pengiriman &amp; TTD Surat Jalan" />
+    <bpmn:task id="Task_Gudang_InputStok" name="Input Penerimaan ke Persediaan" />
+    <bpmn:task id="Task_Gudang_CetakLPS" name="Cetak Laporan Penerimaan Sepeda (LPS)" />
+    <bpmn:task id="Task_Gudang_KirimLPS" name="Kirim LPS ke Keuangan" />
+    <bpmn:sequenceFlow id="sf_ge1" sourceRef="Event_Gudang_TerimaBarang" targetRef="Task_Gudang_Periksa" />
+    <bpmn:sequenceFlow id="sf_ge2" sourceRef="Task_Gudang_Periksa" targetRef="Task_Gudang_InputStok" />
+    <bpmn:sequenceFlow id="sf_ge3" sourceRef="Task_Gudang_InputStok" targetRef="Task_Gudang_CetakLPS" />
+    <bpmn:sequenceFlow id="sf_ge4" sourceRef="Task_Gudang_CetakLPS" targetRef="Task_Gudang_KirimLPS" />
+
+    <bpmn:parallelGateway id="Gateway_Keuangan_Join_Exp" name="Tunggu Dokumen (3-Way Match)" />
+    <bpmn:intermediateCatchEvent id="Event_Keuangan_TerimaTagihan" name="Surat Tagihan Diterima">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_Keuangan_Cocokkan3Way" name="Lakukan Pencocokan (SPP, LPS, Tagihan)" />
+    <bpmn:exclusiveGateway id="Gateway_Keuangan_Decision_Exp" name="Dokumen Cocok?" />
+    <bpmn:intermediateCatchEvent id="Event_Keuangan_Tunggu" name="Tunggu 1 Minggu">
+      <bpmn:timerEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_Keuangan_Bayar" name="Lakukan Pembayaran ke Pemasok" />
+    <bpmn:endEvent id="EndEvent_Lunas_Exp" name="Lunas" />
+    <bpmn:task id="Task_Keuangan_Investigasi" name="Hubungi Pemasok / Gudang (Investigasi)" />
+    <bpmn:endEvent id="EndEvent_Dispute_Exp" name="Dispute" />
+    <bpmn:sequenceFlow id="sf_ke_join1" sourceRef="Task_Manajer_KirimKeuangan" targetRef="Gateway_Keuangan_Join_Exp" />
+    <bpmn:sequenceFlow id="sf_ke_join2" sourceRef="Task_Gudang_KirimLPS" targetRef="Gateway_Keuangan_Join_Exp" />
+    <bpmn:sequenceFlow id="sf_ke_join3" sourceRef="Event_Keuangan_TerimaTagihan" targetRef="Gateway_Keuangan_Join_Exp" />
+    <bpmn:sequenceFlow id="sf_ke1" sourceRef="Gateway_Keuangan_Join_Exp" targetRef="Task_Keuangan_Cocokkan3Way" />
+    <bpmn:sequenceFlow id="sf_ke2" sourceRef="Task_Keuangan_Cocokkan3Way" targetRef="Gateway_Keuangan_Decision_Exp" />
+    <bpmn:sequenceFlow id="sf_ke_yes" name="Yes" sourceRef="Gateway_Keuangan_Decision_Exp" targetRef="Event_Keuangan_Tunggu" />
+    <bpmn:sequenceFlow id="sf_ke_no" name="No" sourceRef="Gateway_Keuangan_Decision_Exp" targetRef="Task_Keuangan_Investigasi" />
+    <bpmn:sequenceFlow id="sf_ke3" sourceRef="Event_Keuangan_Tunggu" targetRef="Task_Keuangan_Bayar" />
+    <bpmn:sequenceFlow id="sf_ke4" sourceRef="Task_Keuangan_Bayar" targetRef="EndEvent_Lunas_Exp" />
+    <bpmn:sequenceFlow id="sf_ke5" sourceRef="Task_Keuangan_Investigasi" targetRef="EndEvent_Dispute_Exp" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Revenue">
+    <bpmndi:BPMNPlane id="BPMNPlane_Revenue" bpmnElement="Collaboration_Revenue">
+      <bpmndi:BPMNShape id="Participant_BeeCycle_Revenue_di" bpmnElement="Participant_BeeCycle_Revenue" isHorizontal="true">
+        <dc:Bounds x="100" y="100" width="1200" height="800" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Penjualan_di" bpmnElement="Lane_Penjualan" isHorizontal="true">
+        <dc:Bounds x="130" y="100" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Gudang_di" bpmnElement="Lane_Gudang" isHorizontal="true">
+        <dc:Bounds x="130" y="300" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Pengiriman_di" bpmnElement="Lane_Pengiriman" isHorizontal="true">
+        <dc:Bounds x="130" y="500" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Keuangan_di" bpmnElement="Lane_Keuangan" isHorizontal="true">
+        <dc:Bounds x="130" y="700" width="1170" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Participant_Pelanggan_di" bpmnElement="Participant_Pelanggan" isHorizontal="true">
+        <dc:Bounds x="100" y="1000" width="1200" height="200" />
+      </bpmndi:BPMNShape>
+      </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Expenditure">
+    <bpmndi:BPMNPlane id="BPMNPlane_Expenditure" bpmnElement="Collaboration_Expenditure">
+      <bpmndi:BPMNShape id="Participant_BeeCycle_Expenditure_di" bpmnElement="Participant_BeeCycle_Expenditure" isHorizontal="true">
+        <dc:Bounds x="100" y="100" width="1000" height="600" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Manajer_di" bpmnElement="Lane_Manajer" isHorizontal="true">
+        <dc:Bounds x="130" y="100" width="970" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Gudang_Exp_di" bpmnElement="Lane_Gudang_Exp" isHorizontal="true">
+        <dc:Bounds x="130" y="300" width="970" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Keuangan_Exp_di" bpmnElement="Lane_Keuangan_Exp" isHorizontal="true">
+        <dc:Bounds x="130" y="500" width="970" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Participant_Pemasok_di" bpmnElement="Participant_Pemasok" isHorizontal="true">
+        <dc:Bounds x="100" y="800" width="1000" height="100" />
+      </bpmndi:BPMNShape>
+      </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</bpmn:definitions>
+
