@@ -1,195 +1,475 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  id="Definitions_Revenue_BeeCycle"
-                  targetNamespace="http://example.com/bpmn/revenue_beecycle">
-
-  <!-- Collaboration: two pools (Participants) -->
-  <bpmn:collaboration id="Collaboration_Revenue">
-    <bpmn:participant id="Participant_BeeCycle" name="BEECYCLE" processRef="Process_BeeCycle"/>
-    <bpmn:participant id="Participant_Customer" name="Pelanggan" processRef="Process_Customer"/>
-
-    <!-- Message flows between pools -->
-    <bpmn:messageFlow id="MF_PO_to_Sales" name="Purchase Order" sourceRef="Task_Customer_SendPO" targetRef="Task_Sales_ReceivePO"/>
-    <bpmn:messageFlow id="MF_Shipping_to_Customer" name="Ship goods & docs" sourceRef="Task_Shipping_SendGoods" targetRef="Task_Customer_ReceiveGoods"/>
-    <bpmn:messageFlow id="MF_Customer_ReturnSignedSN" name="Return signed Shipping Notice" sourceRef="Task_Customer_SignShippingNotice" targetRef="Task_Shipping_ReceiveSignedSN"/>
-    <bpmn:messageFlow id="MF_Invoice_to_Customer" name="Invoice" sourceRef="Task_Finance_SendInvoice" targetRef="Task_Customer_ReceiveInvoice"/>
-    <bpmn:messageFlow id="MF_Remittance_to_Finance" name="Remittance Advice" sourceRef="Task_Customer_SendRemittance" targetRef="Task_Finance_ReceiveRemittance"/>
-    <bpmn:messageFlow id="MF_Receipt_to_Customer" name="Receipt" sourceRef="Task_Finance_SendReceipt" targetRef="Task_Customer_ReceiveReceipt"/>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0bzwtg4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.6.1">
+  <bpmn:collaboration id="Collaboration_0kr2ghp">
+    <bpmn:participant id="Participant_0xpmnma" name="Revenue" processRef="Process_1milzcp" />
   </bpmn:collaboration>
-
-  <!-- Process: Customer (external) -->
-  <bpmn:process id="Process_Customer" isExecutable="false" name="Customer Process">
-    <bpmn:startEvent id="Start_Customer" name="Start"/>
-    <bpmn:userTask id="Task_Customer_SendPO" name="Kirim Purchase Order (PO)"/>
-    <bpmn:sequenceFlow id="flow_c_1" sourceRef="Start_Customer" targetRef="Task_Customer_SendPO"/>
-
-    <bpmn:userTask id="Task_Customer_ReceiveGoods" name="Terima barang & dokumen"/>
-    <bpmn:sequenceFlow id="flow_c_2" sourceRef="Task_Customer_SendPO" targetRef="Task_Customer_ReceiveGoods"/>
-
-    <!-- combine check & sign into single user task per discussion -->
-    <bpmn:userTask id="Task_Customer_SignShippingNotice" name="Periksa barang dan tanda tangani Shipping Notice"/>
-    <bpmn:sequenceFlow id="flow_c_3" sourceRef="Task_Customer_ReceiveGoods" targetRef="Task_Customer_SignShippingNotice"/>
-
-    <bpmn:userTask id="Task_Customer_ReceiveInvoice" name="Terima Invoice"/>
-    <bpmn:sequenceFlow id="flow_c_4" sourceRef="Task_Customer_SignShippingNotice" targetRef="Task_Customer_ReceiveInvoice"/>
-
-    <bpmn:userTask id="Task_Customer_MakePayment" name="Lakukan pembayaran"/>
-    <bpmn:sequenceFlow id="flow_c_5" sourceRef="Task_Customer_ReceiveInvoice" targetRef="Task_Customer_MakePayment"/>
-
-    <bpmn:userTask id="Task_Customer_SendRemittance" name="Kirim Remittance Advice (bukti bayar)"/>
-    <bpmn:sequenceFlow id="flow_c_6" sourceRef="Task_Customer_MakePayment" targetRef="Task_Customer_SendRemittance"/>
-
-    <bpmn:userTask id="Task_Customer_ReceiveReceipt" name="Terima Kuitansi (Receipt)"/>
-    <bpmn:sequenceFlow id="flow_c_7" sourceRef="Task_Customer_SendRemittance" targetRef="Task_Customer_ReceiveReceipt"/>
-
-    <bpmn:endEvent id="End_Customer" name="End"/>
-    <bpmn:sequenceFlow id="flow_c_8" sourceRef="Task_Customer_ReceiveReceipt" targetRef="End_Customer"/>
-  </bpmn:process>
-
-  <!-- Process: BEECYCLE (internal) with Lanes -->
-  <bpmn:process id="Process_BeeCycle" isExecutable="true" name="BEECYCLE Revenue Process">
-    <!-- Lanes -->
-    <bpmn:laneSet id="LaneSet_BeeCycle">
-      <bpmn:lane id="Lane_Sales" name="Sales">
-        <bpmn:flowNodeRef>Task_Sales_ReceivePO</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Sales_CreateSO</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Sales_PrintSO</bpmn:flowNodeRef>
+  <bpmn:process id="Process_1milzcp">
+    <bpmn:laneSet id="LaneSet_1os9ong">
+      <bpmn:lane id="Lane_02g34on" name="Sales">
+        <bpmn:flowNodeRef>Activity_060d08c</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0w2d01w</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0qv5vue</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_15e3omg</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_Warehouse" name="Warehouse">
-        <bpmn:flowNodeRef>Task_Warehouse_ReceiveSO</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Warehouse_CreatePicking</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Warehouse_PackAndCreateShippingNotice</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_1akcm2l" name="Waerhouse">
+        <bpmn:flowNodeRef>Activity_149tmw8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0861d56</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_02bbif2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1df23a2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_06026bu</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_Shipping" name="Shipping">
-        <bpmn:flowNodeRef>Task_Shipping_ReceiveShipment</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Shipping_SendGoods</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Shipping_ReceiveSignedSN</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Shipping_ForwardsSNtoFinance</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_1gdee4j" name="Shipping">
+        <bpmn:flowNodeRef>Activity_1vbeiu2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1jxn1dr</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_Finance" name="Finance">
-        <bpmn:flowNodeRef>Task_Finance_ReceiveDocs</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Finance_CreateInvoice</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Finance_SendInvoice</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Finance_ReceiveRemittance</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Finance_CreateReceipt</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_Finance_SendReceipt</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_1j09bah" name="Pelanggan">
+        <bpmn:flowNodeRef>Activity_17j1py7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0mp8sn9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_15zcup4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1xiongl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1p74lqe</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_059egwz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_16jopio</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0v0ntj9</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1kwoxpb" name="Finance">
+        <bpmn:flowNodeRef>Activity_0u761au</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0wz0ka7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0mpzyre</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1qwyxkv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1oknlel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_08fltlj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_099mg0r</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-
-    <!-- Start event -->
-    <bpmn:startEvent id="Start_BeeCycle" name="Start"/>
-    <bpmn:sequenceFlow id="flow_1" sourceRef="Start_BeeCycle" targetRef="Task_Sales_ReceivePO"/>
-
-    <!-- Sales -->
-    <bpmn:userTask id="Task_Sales_ReceivePO" name="Terima Purchase Order (PO)"/>
-    <bpmn:sequenceFlow id="flow_2" sourceRef="Task_Sales_ReceivePO" targetRef="Task_Sales_CreateSO"/>
-
-    <bpmn:userTask id="Task_Sales_CreateSO" name="Buat Sales Order (SO)"/>
-    <!-- system task: simpan SO ke data store -->
-    <bpmn:serviceTask id="Task_Sales_SaveSO" name="Simpan SO ke Data Store" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_3" sourceRef="Task_Sales_CreateSO" targetRef="Task_Sales_SaveSO"/>
-    <bpmn:sequenceFlow id="flow_4" sourceRef="Task_Sales_SaveSO" targetRef="Task_Sales_PrintSO"/>
-
-    <!-- parallel split: print/distribute SO (3 outputs logically) -->
-    <bpmn:parallelGateway id="Gateway_Sales_DistributeSO" name="Distribusi SO (Parallel)"/>
-    <bpmn:sequenceFlow id="flow_5" sourceRef="Task_Sales_PrintSO" targetRef="Gateway_Sales_DistributeSO"/>
-
-    <bpmn:userTask id="Task_Sales_PrintSO" name="Cetak SO (3 rangkap)"/>
-    <!-- three outgoing flows (in process we route to warehouse, finance and continue) -->
-    <bpmn:sequenceFlow id="flow_6" sourceRef="Gateway_Sales_DistributeSO" targetRef="Task_Warehouse_ReceiveSO"/>
-    <bpmn:sequenceFlow id="flow_7" sourceRef="Gateway_Sales_DistributeSO" targetRef="Task_Finance_ReceiveDocs"/>
-    <bpmn:sequenceFlow id="flow_8" sourceRef="Gateway_Sales_DistributeSO" targetRef="Task_Sales_EndBranch"/>
-
-    <!-- Dummy task to close third branch -->
-    <bpmn:task id="Task_Sales_EndBranch" name="SO to Archive (implicit)"/>
-    <bpmn:sequenceFlow id="flow_9" sourceRef="Task_Sales_EndBranch" targetRef="Task_Warehouse_ReceiveSO" />
-
-    <!-- Warehouse -->
-    <bpmn:userTask id="Task_Warehouse_ReceiveSO" name="Terima SO (dari Sales)"/>
-    <bpmn:sequenceFlow id="flow_10" sourceRef="Task_Warehouse_ReceiveSO" targetRef="Task_Warehouse_CreatePicking"/>
-
-    <bpmn:userTask id="Task_Warehouse_CreatePicking" name="Buat Picking List"/>
-    <bpmn:serviceTask id="Task_Warehouse_SavePicking" name="Simpan Picking List" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_11" sourceRef="Task_Warehouse_CreatePicking" targetRef="Task_Warehouse_SavePicking"/>
-    <bpmn:sequenceFlow id="flow_12" sourceRef="Task_Warehouse_SavePicking" targetRef="Task_Warehouse_PackAndCreateShippingNotice"/>
-
-    <bpmn:userTask id="Task_Warehouse_PackAndCreateShippingNotice" name="Ambil, kemas & buat Shipping Notice"/>
-    <bpmn:serviceTask id="Task_Warehouse_SaveSN" name="Simpan Shipping Notice" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_13" sourceRef="Task_Warehouse_PackAndCreateShippingNotice" targetRef="Task_Warehouse_SaveSN"/>
-    <bpmn:sequenceFlow id="flow_14" sourceRef="Task_Warehouse_SaveSN" targetRef="Gateway_Warehouse_DistributeSN"/>
-
-    <!-- parallel gateway: Shipping Notice -> Shipping (send) and internal store (already saved by serviceTask) -->
-    <bpmn:parallelGateway id="Gateway_Warehouse_DistributeSN"/>
-    <bpmn:sequenceFlow id="flow_15" sourceRef="Gateway_Warehouse_DistributeSN" targetRef="Task_Shipping_ReceiveShipment"/>
-
-    <!-- Shipping -->
-    <bpmn:userTask id="Task_Shipping_ReceiveShipment" name="Terima sepeda & Shipping Notice (dari Warehouse)"/>
-    <bpmn:sequenceFlow id="flow_16" sourceRef="Task_Shipping_ReceiveShipment" targetRef="Task_Shipping_SendGoods"/>
-
-    <bpmn:userTask id="Task_Shipping_SendGoods" name="Kirim barang + Goods Packing Slip + Shipping Notice"/>
-    <!-- message flow to Customer (defined in collaboration) -->
-    <bpmn:sequenceFlow id="flow_17" sourceRef="Task_Shipping_SendGoods" targetRef="Task_Shipping_WaitForSignedSN"/>
-
-    <!-- wait for signed shipping notice: exclusive gateway to model conditional continuation -->
-    <bpmn:exclusiveGateway id="Gateway_Shipping_WaitSigned" name="Shipping Notice ditandatangani?"/>
-    <bpmn:task id="Task_Shipping_WaitForSignedSN" name="Menunggu Shipping Notice yang ditandatangani"/>
-    <bpmn:sequenceFlow id="flow_18" sourceRef="Task_Shipping_WaitForSignedSN" targetRef="Gateway_Shipping_WaitSigned"/>
-
-    <bpmn:sequenceFlow id="flow_19" sourceRef="Gateway_Shipping_WaitSigned" targetRef="Task_Shipping_ReceiveSignedSN">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[Signed == true]]></bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="flow_20" sourceRef="Gateway_Shipping_WaitSigned" targetRef="Task_Shipping_WaitForSignedSN">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[Signed == false]]></bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-
-    <bpmn:userTask id="Task_Shipping_ReceiveSignedSN" name="Terima Shipping Notice yang sudah ditandatangani (dari Pelanggan)"/>
-    <bpmn:sequenceFlow id="flow_21" sourceRef="Task_Shipping_ReceiveSignedSN" targetRef="Task_Shipping_ForwardsSNtoFinance"/>
-
-    <bpmn:serviceTask id="Task_Shipping_ForwardsSNtoFinance" name="Serahkan Shipping Notice ke Finance" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_22" sourceRef="Task_Shipping_ForwardsSNtoFinance" targetRef="Task_Finance_ReceiveDocs"/>
-
-    <!-- Finance -->
-    <bpmn:userTask id="Task_Finance_ReceiveDocs" name="Terima SO dan Shipping Notice"/>
-    <!-- join SO and Shipping Notice logically - we used sequence flows to route here -->
-    <bpmn:sequenceFlow id="flow_23" sourceRef="Task_Finance_ReceiveDocs" targetRef="Task_Finance_CreateInvoice"/>
-
-    <bpmn:serviceTask id="Task_Finance_CreateInvoice" name="Buat Invoice & Simpan" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_24" sourceRef="Task_Finance_CreateInvoice" targetRef="Task_Finance_SendInvoice"/>
-
-    <bpmn:serviceTask id="Task_Finance_SendInvoice" name="Kirim Invoice ke Pelanggan" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_25" sourceRef="Task_Finance_SendInvoice" targetRef="Task_Finance_WaitRemit"/>
-
-    <bpmn:task id="Task_Finance_WaitRemit" name="Menunggu Remittance Advice (bukti bayar)"/>
-    <bpmn:sequenceFlow id="flow_26" sourceRef="Task_Finance_WaitRemit" targetRef="Gateway_Finance_CheckPayment"/>
-
-    <bpmn:exclusiveGateway id="Gateway_Finance_CheckPayment" name="Pembayaran diterima?"/>
-    <bpmn:sequenceFlow id="flow_27" sourceRef="Gateway_Finance_CheckPayment" targetRef="Task_Finance_ReceiveRemittance">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[Paid == true]]></bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="flow_28" sourceRef="Gateway_Finance_CheckPayment" targetRef="Task_Finance_WaitRemit">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[Paid == false]]></bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-
-    <bpmn:serviceTask id="Task_Finance_ReceiveRemittance" name="Terima Remittance Advice (verifikasi)" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_29" sourceRef="Task_Finance_ReceiveRemittance" targetRef="Task_Finance_CreateReceipt"/>
-
-    <bpmn:serviceTask id="Task_Finance_CreateReceipt" name="Buat Kuitansi & Simpan" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_30" sourceRef="Task_Finance_CreateReceipt" targetRef="Task_Finance_SendReceipt"/>
-
-    <bpmn:serviceTask id="Task_Finance_SendReceipt" name="Kirim Kuitansi ke Pelanggan" implementation="##internal"/>
-    <bpmn:sequenceFlow id="flow_31" sourceRef="Task_Finance_SendReceipt" targetRef="End_BeeCycle"/>
-
-    <bpmn:endEvent id="End_BeeCycle" name="End"/>
+    <bpmn:userTask id="Activity_060d08c" name="Membuat sales&#10;order">
+      <bpmn:incoming>Flow_00dmgho</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v8j1ue</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0lia7h4">
+        <bpmn:targetRef>DataStoreReference_11qrs9w</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0w2d01w" name="Cetak SO">
+      <bpmn:incoming>Flow_1v8j1ue</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z0wphp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_17j1py7" name="kirim Purchase order">
+      <bpmn:outgoing>Flow_1cxlgbb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:dataStoreReference id="DataStoreReference_0rwrt7j" />
+    <bpmn:userTask id="Activity_0qv5vue" name="Terima Purchase order">
+      <bpmn:incoming>Flow_1cxlgbb</bpmn:incoming>
+      <bpmn:outgoing>Flow_00dmgho</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:dataStoreReference id="DataStoreReference_11qrs9w" />
+    <bpmn:userTask id="Activity_149tmw8" name="Buat shipping notice">
+      <bpmn:incoming>Flow_07lookd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rjmdye</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0861d56" name="Ambil &#38; kemas sepeda">
+      <bpmn:incoming>Flow_0pji6zd</bpmn:incoming>
+      <bpmn:outgoing>Flow_07lookd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_02bbif2" name="Buat picking list">
+      <bpmn:incoming>Flow_14d28b6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pji6zd</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1i2hzke">
+        <bpmn:targetRef>DataStoreReference_0mp2baw</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1vbeiu2" name="Terima sepeda yang sudah dikemas + Shipping Notice">
+      <bpmn:incoming>Flow_13ffgw6</bpmn:incoming>
+      <bpmn:outgoing>Flow_07zxljg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1jxn1dr" name="Kirim barang &#38; Shipping Notice">
+      <bpmn:incoming>Flow_07zxljg</bpmn:incoming>
+      <bpmn:outgoing>Flow_034ru1m</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0mp8sn9" name="Kembalikan Shipping Notice">
+      <bpmn:incoming>Flow_0xlp2k8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bd63d3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:dataStoreReference id="DataStoreReference_0mp2baw" />
+    <bpmn:userTask id="Activity_1df23a2" name="Terima SO">
+      <bpmn:incoming>Flow_1pcirzd</bpmn:incoming>
+      <bpmn:outgoing>Flow_14d28b6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_15zcup4" name="Lakukan pembayaran">
+      <bpmn:incoming>Flow_121fg0x</bpmn:incoming>
+      <bpmn:outgoing>Flow_1te7dfn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1xiongl" name="Terima Kuitansi">
+      <bpmn:incoming>Flow_08ov7ic</bpmn:incoming>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1p74lqe" name="Kirim Remittance Advice">
+      <bpmn:incoming>Flow_1te7dfn</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m9vgqn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_059egwz" name="Periksa barang dan tanda tangani Shipping Notice">
+      <bpmn:incoming>Flow_1r5x5mk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xlp2k8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_16jopio" name="Terima barang dan dokumen">
+      <bpmn:incoming>Flow_034ru1m</bpmn:incoming>
+      <bpmn:outgoing>Flow_1r5x5mk</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0v0ntj9" name="terima invoice">
+      <bpmn:incoming>Flow_1ufjjed</bpmn:incoming>
+      <bpmn:outgoing>Flow_121fg0x</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_15e3omg">
+      <bpmn:incoming>Flow_0z0wphp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pcirzd</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1kh974j</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="Gateway_06026bu">
+      <bpmn:incoming>Flow_1rjmdye</bpmn:incoming>
+      <bpmn:outgoing>Flow_13ffgw6</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Activity_0u761au" name="Terima Remittance Advice">
+      <bpmn:incoming>Flow_1tnuc5o</bpmn:incoming>
+      <bpmn:incoming>Flow_1m9vgqn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nqk5sr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0wz0ka7" name="Cocokkan dengan Invoice &#38; buat Receipt">
+      <bpmn:incoming>Flow_0nqk5sr</bpmn:incoming>
+      <bpmn:outgoing>Flow_11lc3tl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0mpzyre" name="cetak receipt(kuitansi)">
+      <bpmn:incoming>Flow_11lc3tl</bpmn:incoming>
+      <bpmn:outgoing>Flow_08ov7ic</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_1qwyxkv" name="Cocokkan dokumen &#38; buat Invoice">
+      <bpmn:incoming>Flow_04n8fd6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jd4mkt</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1ec22ww">
+        <bpmn:targetRef>DataStoreReference_0rwrt7j</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_1oknlel" name="cetak invoice">
+      <bpmn:incoming>Flow_0jd4mkt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tnuc5o</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ufjjed</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_08fltlj" name="Terima SO dan Shipping notice">
+      <bpmn:incoming>Flow_0f9ij0s</bpmn:incoming>
+      <bpmn:outgoing>Flow_04n8fd6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_099mg0r">
+      <bpmn:incoming>Flow_1kh974j</bpmn:incoming>
+      <bpmn:incoming>Flow_1bd63d3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f9ij0s</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_00dmgho" sourceRef="Activity_0qv5vue" targetRef="Activity_060d08c" />
+    <bpmn:sequenceFlow id="Flow_1v8j1ue" sourceRef="Activity_060d08c" targetRef="Activity_0w2d01w" />
+    <bpmn:sequenceFlow id="Flow_0z0wphp" sourceRef="Activity_0w2d01w" targetRef="Gateway_15e3omg" />
+    <bpmn:sequenceFlow id="Flow_1cxlgbb" sourceRef="Activity_17j1py7" targetRef="Activity_0qv5vue" />
+    <bpmn:sequenceFlow id="Flow_07lookd" sourceRef="Activity_0861d56" targetRef="Activity_149tmw8" />
+    <bpmn:sequenceFlow id="Flow_1rjmdye" sourceRef="Activity_149tmw8" targetRef="Gateway_06026bu" />
+    <bpmn:sequenceFlow id="Flow_0pji6zd" sourceRef="Activity_02bbif2" targetRef="Activity_0861d56" />
+    <bpmn:sequenceFlow id="Flow_14d28b6" sourceRef="Activity_1df23a2" targetRef="Activity_02bbif2" />
+    <bpmn:sequenceFlow id="Flow_13ffgw6" sourceRef="Gateway_06026bu" targetRef="Activity_1vbeiu2" />
+    <bpmn:sequenceFlow id="Flow_07zxljg" sourceRef="Activity_1vbeiu2" targetRef="Activity_1jxn1dr" />
+    <bpmn:sequenceFlow id="Flow_034ru1m" sourceRef="Activity_1jxn1dr" targetRef="Activity_16jopio" />
+    <bpmn:sequenceFlow id="Flow_0xlp2k8" sourceRef="Activity_059egwz" targetRef="Activity_0mp8sn9" />
+    <bpmn:sequenceFlow id="Flow_1pcirzd" sourceRef="Gateway_15e3omg" targetRef="Activity_1df23a2" />
+    <bpmn:sequenceFlow id="Flow_121fg0x" sourceRef="Activity_0v0ntj9" targetRef="Activity_15zcup4" />
+    <bpmn:sequenceFlow id="Flow_1te7dfn" sourceRef="Activity_15zcup4" targetRef="Activity_1p74lqe" />
+    <bpmn:sequenceFlow id="Flow_08ov7ic" sourceRef="Activity_0mpzyre" targetRef="Activity_1xiongl" />
+    <bpmn:sequenceFlow id="Flow_1m9vgqn" sourceRef="Activity_1p74lqe" targetRef="Activity_0u761au" />
+    <bpmn:sequenceFlow id="Flow_1r5x5mk" sourceRef="Activity_16jopio" targetRef="Activity_059egwz" />
+    <bpmn:sequenceFlow id="Flow_1ufjjed" sourceRef="Activity_1oknlel" targetRef="Activity_0v0ntj9" />
+    <bpmn:sequenceFlow id="Flow_1kh974j" sourceRef="Gateway_15e3omg" targetRef="Gateway_099mg0r" />
+    <bpmn:sequenceFlow id="Flow_1tnuc5o" sourceRef="Activity_1oknlel" targetRef="Activity_0u761au" />
+    <bpmn:sequenceFlow id="Flow_0nqk5sr" sourceRef="Activity_0u761au" targetRef="Activity_0wz0ka7" />
+    <bpmn:sequenceFlow id="Flow_11lc3tl" sourceRef="Activity_0wz0ka7" targetRef="Activity_0mpzyre" />
+    <bpmn:sequenceFlow id="Flow_04n8fd6" sourceRef="Activity_08fltlj" targetRef="Activity_1qwyxkv" />
+    <bpmn:sequenceFlow id="Flow_0jd4mkt" sourceRef="Activity_1qwyxkv" targetRef="Activity_1oknlel" />
+    <bpmn:sequenceFlow id="Flow_0f9ij0s" sourceRef="Gateway_099mg0r" targetRef="Activity_08fltlj" />
+    <bpmn:sequenceFlow id="Flow_1bd63d3" sourceRef="Activity_0mp8sn9" targetRef="Gateway_099mg0r" />
   </bpmn:process>
-
-  <!-- BPMNDiagram / BPMNPlane minimal (diagram info optional for demo editors) -->
-  <bpmndi:BPMNDiagram id="BPMNDiagram_Revenue">
-    <bpmndi:BPMNPlane id="BPMNPlane_Revenue" bpmnElement="Collaboration_Revenue"/>
-    <!-- Note: diagram positioning (BPMNShape/BPMNEdge) omitted for brevity - most editors render from model -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0kr2ghp">
+      <bpmndi:BPMNShape id="Participant_0xpmnma_di" bpmnElement="Participant_0xpmnma" isHorizontal="true">
+        <dc:Bounds x="110" y="80" width="1750" height="1250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_02g34on_di" bpmnElement="Lane_02g34on" isHorizontal="true">
+        <dc:Bounds x="140" y="200" width="1720" height="320" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1akcm2l_di" bpmnElement="Lane_1akcm2l" isHorizontal="true">
+        <dc:Bounds x="140" y="520" width="1720" height="300" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1gdee4j_di" bpmnElement="Lane_1gdee4j" isHorizontal="true">
+        <dc:Bounds x="140" y="820" width="1720" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1j09bah_di" bpmnElement="Lane_1j09bah" isHorizontal="true">
+        <dc:Bounds x="140" y="80" width="1720" height="120" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1kwoxpb_di" bpmnElement="Lane_1kwoxpb" isHorizontal="true">
+        <dc:Bounds x="140" y="1070" width="1720" height="260" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_060d08c_di" bpmnElement="Activity_060d08c">
+        <dc:Bounds x="470" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0w2d01w_di" bpmnElement="Activity_0w2d01w">
+        <dc:Bounds x="660" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17j1py7_di" bpmnElement="Activity_17j1py7">
+        <dc:Bounds x="290" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_0rwrt7j_di" bpmnElement="DataStoreReference_0rwrt7j">
+        <dc:Bounds x="515" y="1235" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qv5vue_di" bpmnElement="Activity_0qv5vue">
+        <dc:Bounds x="290" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_11qrs9w_di" bpmnElement="DataStoreReference_11qrs9w">
+        <dc:Bounds x="495" y="400" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_149tmw8_di" bpmnElement="Activity_149tmw8">
+        <dc:Bounds x="1260" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0861d56_di" bpmnElement="Activity_0861d56">
+        <dc:Bounds x="1090" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02bbif2_di" bpmnElement="Activity_02bbif2">
+        <dc:Bounds x="940" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vbeiu2_di" bpmnElement="Activity_1vbeiu2">
+        <dc:Bounds x="490" y="900" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jxn1dr_di" bpmnElement="Activity_1jxn1dr">
+        <dc:Bounds x="670" y="900" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mp8sn9_di" bpmnElement="Activity_0mp8sn9">
+        <dc:Bounds x="1070" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_0mp2baw_di" bpmnElement="DataStoreReference_0mp2baw">
+        <dc:Bounds x="965" y="695" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1df23a2_di" bpmnElement="Activity_1df23a2">
+        <dc:Bounds x="660" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15zcup4_di" bpmnElement="Activity_15zcup4">
+        <dc:Bounds x="1350" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xiongl_di" bpmnElement="Activity_1xiongl">
+        <dc:Bounds x="1660" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p74lqe_di" bpmnElement="Activity_1p74lqe">
+        <dc:Bounds x="1490" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_059egwz_di" bpmnElement="Activity_059egwz">
+        <dc:Bounds x="940" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16jopio_di" bpmnElement="Activity_16jopio">
+        <dc:Bounds x="790" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v0ntj9_di" bpmnElement="Activity_0v0ntj9">
+        <dc:Bounds x="1200" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_15e3omg_di" bpmnElement="Gateway_15e3omg">
+        <dc:Bounds x="865" y="295" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_06026bu_di" bpmnElement="Gateway_06026bu">
+        <dc:Bounds x="1285" y="695" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u761au_di" bpmnElement="Activity_0u761au">
+        <dc:Bounds x="900" y="1120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wz0ka7_di" bpmnElement="Activity_0wz0ka7">
+        <dc:Bounds x="1070" y="1120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mpzyre_di" bpmnElement="Activity_0mpzyre">
+        <dc:Bounds x="1260" y="1120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qwyxkv_di" bpmnElement="Activity_1qwyxkv">
+        <dc:Bounds x="490" y="1130" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oknlel_di" bpmnElement="Activity_1oknlel">
+        <dc:Bounds x="730" y="1130" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08fltlj_di" bpmnElement="Activity_08fltlj">
+        <dc:Bounds x="250" y="1190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_099mg0r_di" bpmnElement="Gateway_099mg0r">
+        <dc:Bounds x="275" y="1105" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_00dmgho_di" bpmnElement="Flow_00dmgho">
+        <di:waypoint x="390" y="320" />
+        <di:waypoint x="470" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v8j1ue_di" bpmnElement="Flow_1v8j1ue">
+        <di:waypoint x="570" y="320" />
+        <di:waypoint x="660" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z0wphp_di" bpmnElement="Flow_0z0wphp">
+        <di:waypoint x="760" y="320" />
+        <di:waypoint x="865" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cxlgbb_di" bpmnElement="Flow_1cxlgbb">
+        <di:waypoint x="340" y="180" />
+        <di:waypoint x="340" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07lookd_di" bpmnElement="Flow_07lookd">
+        <di:waypoint x="1190" y="600" />
+        <di:waypoint x="1260" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rjmdye_di" bpmnElement="Flow_1rjmdye">
+        <di:waypoint x="1310" y="640" />
+        <di:waypoint x="1310" y="695" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pji6zd_di" bpmnElement="Flow_0pji6zd">
+        <di:waypoint x="1040" y="600" />
+        <di:waypoint x="1090" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14d28b6_di" bpmnElement="Flow_14d28b6">
+        <di:waypoint x="760" y="600" />
+        <di:waypoint x="940" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13ffgw6_di" bpmnElement="Flow_13ffgw6">
+        <di:waypoint x="1310" y="745" />
+        <di:waypoint x="1310" y="780" />
+        <di:waypoint x="540" y="780" />
+        <di:waypoint x="540" y="900" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07zxljg_di" bpmnElement="Flow_07zxljg">
+        <di:waypoint x="590" y="940" />
+        <di:waypoint x="670" y="940" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_034ru1m_di" bpmnElement="Flow_034ru1m">
+        <di:waypoint x="770" y="940" />
+        <di:waypoint x="1370" y="940" />
+        <di:waypoint x="1370" y="290" />
+        <di:waypoint x="840" y="290" />
+        <di:waypoint x="840" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xlp2k8_di" bpmnElement="Flow_0xlp2k8">
+        <di:waypoint x="1040" y="140" />
+        <di:waypoint x="1070" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pcirzd_di" bpmnElement="Flow_1pcirzd">
+        <di:waypoint x="915" y="320" />
+        <di:waypoint x="930" y="320" />
+        <di:waypoint x="930" y="570" />
+        <di:waypoint x="760" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_121fg0x_di" bpmnElement="Flow_121fg0x">
+        <di:waypoint x="1300" y="140" />
+        <di:waypoint x="1350" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1te7dfn_di" bpmnElement="Flow_1te7dfn">
+        <di:waypoint x="1450" y="140" />
+        <di:waypoint x="1490" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08ov7ic_di" bpmnElement="Flow_08ov7ic">
+        <di:waypoint x="1360" y="1160" />
+        <di:waypoint x="1710" y="1160" />
+        <di:waypoint x="1710" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m9vgqn_di" bpmnElement="Flow_1m9vgqn">
+        <di:waypoint x="1590" y="140" />
+        <di:waypoint x="1620" y="140" />
+        <di:waypoint x="1620" y="1080" />
+        <di:waypoint x="950" y="1080" />
+        <di:waypoint x="950" y="1120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r5x5mk_di" bpmnElement="Flow_1r5x5mk">
+        <di:waypoint x="890" y="140" />
+        <di:waypoint x="940" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ufjjed_di" bpmnElement="Flow_1ufjjed">
+        <di:waypoint x="780" y="1130" />
+        <di:waypoint x="780" y="1040" />
+        <di:waypoint x="1520" y="1040" />
+        <di:waypoint x="1520" y="240" />
+        <di:waypoint x="1250" y="240" />
+        <di:waypoint x="1250" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kh974j_di" bpmnElement="Flow_1kh974j">
+        <di:waypoint x="890" y="345" />
+        <di:waypoint x="890" y="490" />
+        <di:waypoint x="300" y="490" />
+        <di:waypoint x="300" y="1105" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tnuc5o_di" bpmnElement="Flow_1tnuc5o">
+        <di:waypoint x="830" y="1170" />
+        <di:waypoint x="865" y="1170" />
+        <di:waypoint x="865" y="1160" />
+        <di:waypoint x="900" y="1160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nqk5sr_di" bpmnElement="Flow_0nqk5sr">
+        <di:waypoint x="1000" y="1160" />
+        <di:waypoint x="1070" y="1160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11lc3tl_di" bpmnElement="Flow_11lc3tl">
+        <di:waypoint x="1170" y="1160" />
+        <di:waypoint x="1260" y="1160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04n8fd6_di" bpmnElement="Flow_04n8fd6">
+        <di:waypoint x="350" y="1230" />
+        <di:waypoint x="420" y="1230" />
+        <di:waypoint x="420" y="1170" />
+        <di:waypoint x="490" y="1170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jd4mkt_di" bpmnElement="Flow_0jd4mkt">
+        <di:waypoint x="590" y="1170" />
+        <di:waypoint x="730" y="1170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f9ij0s_di" bpmnElement="Flow_0f9ij0s">
+        <di:waypoint x="300" y="1155" />
+        <di:waypoint x="300" y="1190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bd63d3_di" bpmnElement="Flow_1bd63d3">
+        <di:waypoint x="1120" y="180" />
+        <di:waypoint x="1120" y="260" />
+        <di:waypoint x="1470" y="260" />
+        <di:waypoint x="1470" y="1000" />
+        <di:waypoint x="640" y="1000" />
+        <di:waypoint x="410" y="1130" />
+        <di:waypoint x="325" y="1130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0lia7h4_di" bpmnElement="DataOutputAssociation_0lia7h4">
+        <di:waypoint x="520" y="360" />
+        <di:waypoint x="520" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1ec22ww_di" bpmnElement="DataOutputAssociation_1ec22ww">
+        <di:waypoint x="542" y="1210" />
+        <di:waypoint x="544" y="1235" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1i2hzke_di" bpmnElement="DataOutputAssociation_1i2hzke">
+        <di:waypoint x="990" y="640" />
+        <di:waypoint x="990" y="695" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-
 </bpmn:definitions>
